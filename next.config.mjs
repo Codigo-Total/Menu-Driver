@@ -1,7 +1,5 @@
-import type { NextConfig } from 'next';
-
 /** @type {import('next').NextConfig} */
-const nextConfig: NextConfig = {
+const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -14,10 +12,6 @@ const nextConfig: NextConfig = {
         hostname: 'via.placeholder.com',
       },
     ],
-  },
-  // Experimental flags for Next 15 if needed
-  experimental: {
-    // Adding any stable turbopack features here if required
   },
 };
 

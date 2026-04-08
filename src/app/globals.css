@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-yellow-50: #fefce8;
+  --color-brand-yellow-100: #fef9c3;
+  --color-brand-yellow-200: #fef08a;
+  --color-brand-yellow-300: #fde047;
+  --color-brand-yellow-400: #facc15;
+  --color-brand-yellow-500: #eab308;
+  --color-brand-yellow-600: #ca8a04;
+  --color-brand-yellow-700: #a16207;
+  --color-brand-yellow-800: #854d0e;
+  --color-brand-yellow-900: #713f12;
+  --color-brand-yellow-950: #422006;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+  --animate-zoom-in: zoom-in 0.5s ease-out;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes zoom-in {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+}
+
+/* Ensure Tailwind v4 respects the .dark class for compatibility with next-themes */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    @apply text-slate-900 bg-white dark:text-slate-100 dark:bg-slate-950 antialiased selection:bg-brand-yellow-200 selection:text-brand-yellow-950 transition-colors duration-500;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    @apply font-display tracking-tight text-slate-950 dark:text-white;
+  }
+
+  /* Universal Clickable Indicators */
+  button, 
+  a, 
+  [role="button"], 
+  .cursor-pointer {
+    cursor: pointer;
+  }
+}
+
+@layer utilities {
+  /* No scrollbar helper */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Glassmorphism helpers */
+  .glass {
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/20 dark:border-slate-800/30;
+  }
+
+  /* 3D Transform Utilities for Card Flips */
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+}
+
+/* Custom Animations for Smooth Fluid Experience */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Custom Scrollbar for non-hidden areas */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 dark:bg-slate-800 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors;
+}

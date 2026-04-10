@@ -100,6 +100,27 @@
   animation: float 6s ease-in-out infinite;
 }
 
+/* Screensaver Ken Burns effect for background images */
+@keyframes ken-burns {
+  0% { transform: scale(1.0) translate(0, 0); }
+  50% { transform: scale(1.15) translate(-2%, -1%); }
+  100% { transform: scale(1.0) translate(0, 0); }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 20s ease-in-out infinite;
+}
+
+/* CTA pulsing glow */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(234, 179, 8, 0.3), 0 0 40px rgba(234, 179, 8, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(234, 179, 8, 0.5), 0 0 60px rgba(234, 179, 8, 0.2); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
 /* Custom Scrollbar for non-hidden areas */
 ::-webkit-scrollbar {
   width: 6px;

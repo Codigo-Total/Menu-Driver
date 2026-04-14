@@ -1,20 +1,24 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
 import { useLangStore } from '@/store/lang/lang.slice';
-import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
-import { RefreshCcw, Trophy, LayoutGrid, Timer } from 'lucide-react';
-import ReactConfetti from 'react-confetti';
-import { useWindowSize } from 'react-use';
+import { RotateCcw } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+interface PuzzleGameProps {
+  onWin: (stats: { time: number; moves: number }) => void;
+}
+
+export interface PuzzleGameHandle {
+  restart: () => void;
+}
 
 /**
- * 3x3 Sliding Puzzle Game.
- * Optimized for 350px+ screens with a premium 'Squarer' aesthetic.
+ * Premium 3x3 Sliding Puzzle Game for GameStage.
  */
-export const PuzzleGame = () => {
+const PuzzleGame = forwardRef<PuzzleGameHandle, PuzzleGameProps>(({ onWin }, ref) => {
   const { t, lang, hydrated } = useLangStore();
-  const { width, height } = useWindowSize();
   const [moves, setMoves] = useState(0);
   const [isWon, setIsWon] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -29,46 +33,30 @@ export const PuzzleGame = () => {
     return neighbors;
   }, []);
 
-  const [tiles, setTiles] = useState<number[]>(() => {
-    const initialTiles = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+  const shuffleTiles = (initialTiles: number[]) => {
     const shuffled = [...initialTiles];
-    // Simple shuffle logic that ensures solvability
-    for (let i = 0; i < 200; i++) {
-       const emptyIndex = shuffled.indexOf(0);
-       const neighbors = [
-          emptyIndex % 3 > 0 ? emptyIndex - 1 : -1,
-          emptyIndex % 3 < 2 ? emptyIndex + 1 : -1,
-          emptyIndex >= 3 ? emptyIndex - 3 : -1,
-          emptyIndex < 6 ? emptyIndex + 3 : -1
-       ].filter(n => n !== -1);
-       const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-       [shuffled[emptyIndex], shuffled[randomNeighbor]] = [shuffled[randomNeighbor], shuffled[emptyIndex]];
-    }
-    return shuffled;
-  });
-
-  const initGame = useCallback(() => {
-    const initialTiles = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-    const shuffled = [...initialTiles];
-    
-    // Simple shuffle logic that ensures solvability
     for (let i = 0; i < 200; i++) {
        const emptyIndex = shuffled.indexOf(0);
        const neighbors = getNeighbors(emptyIndex);
        const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
        [shuffled[emptyIndex], shuffled[randomNeighbor]] = [shuffled[randomNeighbor], shuffled[emptyIndex]];
     }
+    return shuffled;
+  };
 
-    setTiles(shuffled);
+  const [tiles, setTiles] = useState<number[]>(() => shuffleTiles([1, 2, 3, 4, 5, 6, 7, 8, 0]));
+
+  const initGame = useCallback(() => {
+    setTiles(shuffleTiles([1, 2, 3, 4, 5, 6, 7, 8, 0]));
     setMoves(0);
     setIsWon(false);
     setStartTime(Date.now());
     setElapsedTime(0);
   }, [getNeighbors]);
 
-  useEffect(() => {
-    // initGame() no longer needed on mount due to lazy initializer
-  }, []);
+  useImperativeHandle(ref, () => ({
+    restart: initGame
+  }));
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -87,6 +75,8 @@ export const PuzzleGame = () => {
     const isNeighbor = getNeighbors(emptyIndex).includes(index);
 
     if (isNeighbor) {
+      if (!startTime) setStartTime(Date.now());
+      
       const newTiles = [...tiles];
       [newTiles[emptyIndex], newTiles[index]] = [newTiles[index], newTiles[emptyIndex]];
       setTiles(newTiles);
@@ -94,6 +84,7 @@ export const PuzzleGame = () => {
 
       if (newTiles.every((val, i) => val === (i === 8 ? 0 : i + 1))) {
         setIsWon(true);
+        onWin({ time: elapsedTime, moves: moves + 1 });
       }
     }
   };
@@ -101,72 +92,69 @@ export const PuzzleGame = () => {
   if (!hydrated) return null;
 
   return (
-    <div className="flex flex-col items-center bg-white dark:bg-slate-900 p-4 sm:p-12 rounded-3xl lg:rounded-[3rem] shadow-2xl border-2 sm:border-4 border-slate-50 dark:border-slate-800">
-      {isWon && <ReactConfetti width={width} height={height} recycle={false} numberOfPieces={300} colors={['#fb7185', '#eab308']} />}
-      
-      {/* HUD Bar */}
-      <div className="w-full flex items-center justify-between mb-8 sm:mb-12 bg-slate-50 dark:bg-slate-950 p-4 sm:p-6 rounded-xl sm:rounded-4xl ring-1 ring-slate-100 dark:ring-slate-800 shadow-inner">
-        <div className="flex items-center gap-2 sm:gap-6">
-          <div className="flex flex-col items-center px-4 sm:px-6 border-r border-slate-200 dark:border-slate-800">
-            <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-400 mb-1">{t('games.moves')}</span>
-            <span className="text-xl sm:text-3xl font-display font-black text-slate-900 dark:text-white">{moves}</span>
-          </div>
-          <div className="flex flex-col items-center px-4 sm:px-6">
-            <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-400 mb-1">{t('games.time')}</span>
-            <div className="flex items-center gap-1 sm:gap-2 text-xl sm:text-3xl font-display font-black text-slate-900 dark:text-white">
-              <Timer className="h-4 w-4 sm:h-6 sm:w-6 text-rose-500" />
-              {elapsedTime}s
-            </div>
+    <div className="w-full h-full flex flex-col items-center justify-center max-w-md px-4 overflow-hidden">
+      {/* Visual HUD */}
+      <div className="w-full flex justify-between mb-4 sm:mb-8 shrink-0">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+            {lang === 'es' ? 'Objetivo' : 'Goal'}
+          </span>
+          <p className="text-[10px] font-black text-rose-500 uppercase">
+            {lang === 'es' ? 'Ordenar 1-8' : 'Order 1-8'}
+          </p>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+            {lang === 'es' ? 'Tiempo' : 'Time'}
+          </span>
+          <div className="flex items-center gap-3">
+             <p className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tabular-nums">{elapsedTime}s</p>
+             <button 
+              onClick={initGame}
+              className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-brand-yellow-600 transition-colors"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
           </div>
         </div>
-
-        <Button 
-          variant="ghost" 
-          onClick={initGame} 
-          className="h-10 w-10 sm:h-16 sm:w-16 p-0 rounded-lg sm:rounded-full bg-white dark:bg-slate-800 hover:rotate-180 transition-transform duration-500 shadow-md"
-        >
-          <RefreshCcw className="h-4 w-4 sm:h-6 sm:w-6" />
-        </Button>
       </div>
 
-      <div className="relative w-full flex justify-center">
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 bg-slate-100 dark:bg-slate-950 p-3 sm:p-4 rounded-xl sm:rounded-4xl shadow-inner">
+      <div className="relative w-full aspect-square max-h-[55vh] sm:max-h-[60vh] bg-slate-200 dark:bg-slate-900 p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-inner border border-slate-100 dark:border-slate-800">
+        <div className="grid grid-cols-3 grid-rows-3 gap-2 sm:gap-3 h-full w-full">
           {tiles.map((tile, index) => (
-            <div
+            <motion.div
               key={index}
+              layout
               onClick={() => handleTileClick(index)}
               className={cn(
-                "h-16 w-16 xs:h-20 xs:w-20 sm:h-28 sm:w-28 flex items-center justify-center text-2xl sm:text-3xl font-display font-black rounded-lg sm:rounded-2xl transition-all duration-300 transform-gpu cursor-pointer shadow-lg",
+                "flex items-center justify-center text-2xl sm:text-3xl font-display font-black rounded-xl sm:rounded-2xl transition-all duration-300 transform-gpu cursor-pointer",
                 tile === 0 
-                  ? "bg-transparent shadow-none border-2 border-dashed border-slate-300 dark:border-slate-800" 
-                  : "bg-white dark:bg-slate-800 text-slate-900 dark:text-white border-2 border-transparent hover:border-rose-400 hover:scale-[1.03] active:scale-95"
+                  ? "bg-transparent border-2 border-dashed border-slate-300 dark:border-slate-800" 
+                  : "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-lg shadow-slate-200/50 dark:shadow-black/20 border border-slate-100 dark:border-slate-700 hover:scale-[1.05] active:scale-95 z-10"
               )}
             >
               {tile !== 0 && tile}
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
-       {/* Winning State UI */}
-       {isWon ? (
-        <div className="mt-8 sm:mt-12 text-center animate-in zoom-in duration-500">
-           <div className="inline-flex items-center gap-3 sm:gap-4 bg-rose-500 text-white px-6 sm:px-10 py-3 sm:py-5 rounded-xl sm:rounded-4xl shadow-2xl">
-              <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
-              <div className="text-left">
-                <h4 className="font-black uppercase tracking-tighter text-lg sm:text-xl">{t('games.congrats')}</h4>
-                <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-rose-100 opacity-80 uppercase leading-none">Puzzle Master</p>
-              </div>
-            </div>
-        </div>
-      ) : (
-        <div className="mt-8 sm:mt-12 flex items-center gap-3 bg-slate-100 dark:bg-slate-950 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-full opacity-60">
-          <LayoutGrid className="h-4 w-4 text-slate-400" />
-          <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-slate-400">
-            {t('games.grid')} 3x3 • {lang === 'es' ? 'Desliza para ordenar' : 'Slide to sort'}
+      <div className="mt-6 sm:mt-10 flex items-center gap-4 bg-white/50 dark:bg-slate-900/50 px-6 py-2 rounded-full border border-slate-200 dark:border-slate-800 backdrop-blur-sm shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-indigo-500" />
+          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+            {lang === 'es' ? 'Movimientos' : 'Moves'}: {moves}
           </span>
         </div>
-      )}
+        <div className="h-4 w-px bg-slate-300 dark:bg-slate-700" />
+        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+          {lang === 'es' ? 'Dificultad' : 'Difficulty'}: Pro
+        </span>
+      </div>
     </div>
   );
-};
+});
+
+PuzzleGame.displayName = 'PuzzleGame';
+
+export default PuzzleGame;

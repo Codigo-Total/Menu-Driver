@@ -10,13 +10,14 @@ import { useEffect } from "react";
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const { lang } = useLangStore();
   const pathname = usePathname();
-  
+
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 
   const isHomePage = pathname === "/";
-  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/dashboard');
+  const isAdminRoute =
+    pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
 
   return (
     <div

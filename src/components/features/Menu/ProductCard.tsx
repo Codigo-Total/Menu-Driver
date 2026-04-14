@@ -23,7 +23,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   if (!hydrated) return null;
 
   const name = product.name[lang] || product.name["en"];
-  const description = product.description[lang] || product.description["en"];
 
   return (
     <div
@@ -52,9 +51,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <h3 className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white leading-none mb-1.5 uppercase tracking-tighter">
             {name}
           </h3>
-          <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest line-clamp-1">
-            {description.split(".")[0]}
-          </p>
         </div>
 
         <div className="flex items-center justify-between mt-auto pt-2">

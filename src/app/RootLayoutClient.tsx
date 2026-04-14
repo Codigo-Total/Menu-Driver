@@ -18,12 +18,8 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   }, [lang]);
 
   const isHomePage = pathname === "/";
-<<<<<<< agustin
-  const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
-=======
   const isAdminRoute =
     pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
->>>>>>> dev
 
   return (
     <div
@@ -35,7 +31,10 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
       {!isHomePage && !isAdminRoute && <Header />}
 
       <main
-        className={cn("flex-1", !isHomePage && !isAdminRoute && "container mx-auto px-4 sm:px-6")}
+        className={cn(
+          "flex-1",
+          !isHomePage && !isAdminRoute && "container mx-auto px-4 sm:px-6",
+        )}
       >
         {children}
       </main>

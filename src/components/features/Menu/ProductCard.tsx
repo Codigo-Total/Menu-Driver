@@ -91,12 +91,6 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <h3 className="text-lg font-display font-extrabold text-slate-900 dark:text-white/95 leading-[1.15] tracking-tight line-clamp-2">
             {name}
           </h3>
-<<<<<<< agustin
-          <p className="text-sm font-medium text-slate-500 dark:text-white/50 line-clamp-2 leading-relaxed">
-            {description.split(".")[0]}
-          </p>
-=======
->>>>>>> dev
         </div>
 
         {/* Bottom: Price + CTA */}

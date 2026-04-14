@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { MenuGrid } from '@/components/features/Menu/MenuGrid';
-import { useLangStore } from '@/store/lang/lang.slice';
+import { MenuGrid } from "@/components/features/Menu/MenuGrid";
+import { useLangStore } from "@/store/lang/lang.slice";
 
 /**
  * Main Interactive Menu Page for Uber Riders.
@@ -13,7 +13,7 @@ export default function MenuPage() {
   if (!hydrated) return null;
 
   return (
-    <div className="py-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="py-3 animate-in fade-in duration-500">
       <MenuGrid />
     </div>
   );

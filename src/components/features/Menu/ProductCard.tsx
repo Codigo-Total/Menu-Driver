@@ -1,24 +1,34 @@
 "use client";
 
+import { useState } from "react";
+
 import { Product } from "@/types/menu.types";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { useCartStore } from "@/store/cart/cart.slice";
-import { Plus } from "lucide-react";
+import { useToastStore } from "@/store/ui/toast.slice";
+import { useFlyToCartStore } from "@/store/ui/flyToCart.slice";
+import { Plus, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/cn";
 
 interface ProductCardProps {
   product: Product;
 }
 
 /**
- * Mobile-First Product Card Component.
- * Optimized for Uber rides: High contrast, large touch targets, and app-like feel.
- * Cleaned up: Removed favorites and info icons as per user request.
+ * Premium Horizontal Product Card — Tablet Optimized.
+ * Typography scaled for arm's-length reading (60-80cm).
+ * Glassmorphism + depth. Touch targets ≥ 48px.
  */
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { lang, hydrated } = useLangStore();
+  const cartItems = useCartStore((state) => state.items);
   const addItem = useCartStore((state) => state.addItem);
+
+  const quantity = cartItems.find((p) => p.id === product.id)?.quantity || 0;
+  const addFlyItem = useFlyToCartStore((state) => state.addFlyItem);
   const router = useRouter();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   if (!hydrated) return null;
 
@@ -28,51 +38,103 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <div
       onClick={() => router.push(`/product/${product.id}`)}
-      className="group relative flex flex-col bg-slate-50/50 dark:bg-slate-900/50 rounded-3xl p-4 transition-all duration-500 hover:shadow-xl hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-100 dark:hover:border-slate-800 cursor-pointer h-full"
+      className="group relative flex flex-row rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer h-[170px]
+        bg-white dark:bg-slate-900/60 backdrop-blur-xl
+        border border-slate-100 dark:border-white/4
+        shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)]
+        hover:bg-slate-50 dark:hover:bg-white/4
+        hover:border-slate-200 dark:hover:border-white/8
+        hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgb(0,0,0,0.5)]
+        active:scale-[0.985] active:shadow-none dark:active:shadow-none"
     >
-      {/* Image Container */}
-      <div className="relative aspect-square w-full rounded-2xl overflow-hidden mb-4 bg-white dark:bg-slate-950 shadow-inner">
+      {/* Image — fixed width, fills card height */}
+      <div className="relative w-[170px] min-w-[170px] h-full overflow-hidden bg-slate-100 dark:bg-slate-800">
         <img
           src={product.image}
           alt={name}
-          className="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110"
+          onLoad={() => setIsLoaded(true)}
+          className={cn(
+            "object-cover w-full h-full transform transition-all duration-700 group-hover:scale-110",
+            !isLoaded ? "opacity-0 scale-105" : "opacity-100 scale-100",
+          )}
         />
 
-        {/* Floating Badges */}
+        {/* Skeleton Shimmer */}
+        {!isLoaded && (
+          <div className="absolute inset-0 bg-slate-200 dark:bg-slate-800 animate-pulse flex items-center justify-center">
+            <div className="w-full h-full bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 -translate-x-full animate-[shimmer_2s_infinite]" />
+          </div>
+        )}
+
+        {/* Quantity Badge */}
+        {quantity > 0 && (
+          <div className="absolute top-3 right-3 flex items-center justify-center min-w-[28px] h-7 bg-slate-900 border border-white/20 text-white text-xs font-black rounded-full shadow-xl animate-in zoom-in duration-300">
+            {quantity}
+          </div>
+        )}
+
+        {/* Right-edge gradient blend */}
+        <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/60" />
+
+        {/* Popular Badge */}
         {product.isPopular && (
-          <div className="absolute top-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-[9px] uppercase font-black px-3 py-1.5 rounded-lg shadow-lg border border-slate-100 dark:border-slate-800 tracking-widest text-brand-yellow-600">
-            {lang === "es" ? "Popular" : "Popular"}
+          <div className="absolute top-3 left-3 flex items-center gap-1 bg-brand-yellow-500/90 backdrop-blur-sm text-brand-yellow-950 text-[10px] uppercase font-black px-2.5 py-1.5 rounded-lg tracking-wider shadow-lg shadow-brand-yellow-500/30">
+            <Star className="h-3 w-3 fill-current" />
+            Popular
           </div>
         )}
       </div>
 
-      {/* Content Area */}
-      <div className="flex flex-col flex-1 px-1">
-        <div className="flex flex-col mb-3">
-          <h3 className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white leading-none mb-1.5 uppercase tracking-tighter">
+      {/* Content — scaled for tablet reading distance */}
+      <div className="flex flex-col justify-between flex-1 p-5 min-w-0">
+        {/* Top: Name + Description */}
+        <div className="min-w-0 space-y-1">
+          <h3 className="text-lg font-display font-extrabold text-slate-900 dark:text-white/95 leading-[1.15] tracking-tight line-clamp-2">
             {name}
           </h3>
-          <p className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest line-clamp-1">
+          <p className="text-sm font-medium text-slate-500 dark:text-white/50 line-clamp-2 leading-relaxed">
             {description.split(".")[0]}
           </p>
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-2">
-          <span className="text-2xl sm:text-3xl font-display font-black text-slate-900 dark:text-white tracking-tighter">
-            ${product.price.toFixed(2)}
-          </span>
+        {/* Bottom: Price + CTA */}
+        <div className="flex items-end justify-between mt-auto">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-white/20 mb-0.5">
+              Price (USD)
+            </span>
+            <span className="text-2xl font-display font-black text-slate-900 dark:text-white tracking-tight leading-none">
+              ${product.price.toFixed(2)}
+            </span>
+          </div>
 
           <button
-            className="flex items-center justify-center h-10 sm:h-12 px-3 sm:px-5 rounded-xl bg-brand-yellow-500 text-brand-yellow-950 shadow-lg shadow-brand-yellow-500/20 active:scale-90 transition-all gap-2"
+            className="flex items-center justify-center h-12 w-12 rounded-xl transition-all duration-300
+              bg-brand-yellow-500 text-brand-yellow-950
+              shadow-lg shadow-brand-yellow-500/25
+              hover:shadow-xl hover:shadow-brand-yellow-500/40
+              hover:bg-brand-yellow-400
+              active:scale-90 active:shadow-none"
             onClick={(e) => {
               e.stopPropagation();
+
+              const cardElement = e.currentTarget.closest(".group");
+              const imgElement = cardElement?.querySelector("img");
+              if (imgElement) {
+                const rect = imgElement.getBoundingClientRect();
+                addFlyItem({
+                  image: product.image,
+                  startX: rect.left,
+                  startY: rect.top,
+                  startWidth: rect.width,
+                });
+              }
+
               addItem(product);
             }}
+            aria-label={lang === "es" ? "Agregar al carrito" : "Add to cart"}
           >
-            <Plus className="h-5 w-5 sm:h-6 sm:w-6 stroke-3" />
-            <span className="hidden leading-none sm:inline text-[10px] font-black uppercase tracking-widest">
-              {lang === "es" ? "Agregar" : "Add"}
-            </span>
+            <Plus className="h-5 w-5 stroke-[2.5]" />
           </button>
         </div>
       </div>

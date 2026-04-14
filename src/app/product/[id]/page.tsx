@@ -57,15 +57,13 @@ export default function ProductPage() {
   }
 
   const name = product.name[lang] || product.name["en"];
-  const description = product.description[lang] || product.description["en"];
-
   const handleAddToCart = () => {
     // Add item multiple times based on quantity
     for (let i = 0; i < quantity; i++) {
       addItem(product);
     }
     setIsCartOpen(true);
-    router.push("/menu"); // Go back to store menu instead of landing page
+    router.push("/menu"); 
   };
 
   return (
@@ -93,13 +91,10 @@ export default function ProductPage() {
         <section className="flex flex-col h-full bg-white dark:bg-slate-950">
           <div className="flex-1 p-5 sm:p-7 lg:p-8 space-y-4">
             {/* Header Info */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 pt-4">
               <h1 className="text-xl lg:text-3xl font-display font-black text-slate-950 dark:text-white uppercase tracking-tighter leading-tight">
                 {name}
               </h1>
-              <p className="text-[10px] lg:text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-md">
-                {description}
-              </p>
             </div>
 
             {/* Price & Status */}

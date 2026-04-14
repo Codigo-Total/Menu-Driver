@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCartStore } from "@/store/cart/cart.slice";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { Button } from "@/components/ui/Button";
@@ -12,6 +12,8 @@ import {
   Building2,
   ShieldCheck,
   Loader2,
+  Trash2,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import ReactConfetti from "react-confetti";
@@ -22,7 +24,8 @@ import { useWindowSize } from "react-use";
  * Features: Payment simulation, order summary, and celebration on success.
  */
 export default function CheckoutPage() {
-  const { items, getTotal, clearCart } = useCartStore();
+  const { items, getTotal, clearCart, removeItem, updateQuantity } =
+    useCartStore();
   const { lang, t, hydrated } = useLangStore();
   const { width, height } = useWindowSize();
 
@@ -32,12 +35,18 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Auto-redirect if cart is empty (unless it was a successful order)
-  useEffect(() => {
-    if (items.length === 0 && step !== "success") {
-      // Could redirect to menu here
+  const [showScrollHint, setShowScrollHint] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    if (scrollTop + clientHeight >= scrollHeight - 20) {
+      setShowScrollHint(false);
+    } else {
+      setShowScrollHint(true);
     }
-  }, [items, step]);
+  };
 
   if (!hydrated) return null;
 
@@ -53,7 +62,7 @@ export default function CheckoutPage() {
 
   if (step === "success") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-950 p-6 overflow-hidden">
+      <div className="min-h-[calc(100vh-178px)] flex flex-col items-center justify-center bg-white dark:bg-slate-950 p-6 overflow-hidden">
         <ReactConfetti
           width={width}
           height={height}
@@ -88,9 +97,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
-
-      <main className="container mx-auto py-12 max-w-5xl">
+    <div className="transition-colors duration-500">
+      <main className="container mx-auto py-6 max-w-5xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Left: Summary */}
           <div className="space-y-8">
@@ -103,46 +111,83 @@ export default function CheckoutPage() {
               </h2>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-xl shadow-slate-100 dark:shadow-none border border-slate-50 dark:border-slate-800">
-              <div className="space-y-6 max-h-[40vh] overflow-y-auto pr-4 no-scrollbar">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="h-14 w-14 rounded-2xl bg-slate-50 dark:bg-slate-800 overflow-hidden ring-1 ring-slate-100 dark:ring-slate-700">
-                        <img
-                          src={item.image}
-                          alt={item.name[lang]}
-                          className="h-full w-full object-cover"
-                        />
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-xl shadow-slate-100 dark:shadow-none border border-slate-50 dark:border-slate-800 relative overflow-hidden">
+              <div
+                ref={scrollRef}
+                onScroll={handleScroll}
+                className="space-y-6 max-h-[250px] overflow-y-auto pr-4 no-scrollbar relative z-10"
+              >
+                {items.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">
+                      Tu bolsa está vacía
+                    </p>
+                  </div>
+                ) : (
+                  items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between group"
+                    >
+                      <div className="flex items-center gap-4 flex-1 min-w-0">
+                        <div className="relative h-14 w-14 rounded-2xl bg-slate-50 dark:bg-slate-800 overflow-hidden ring-1 ring-slate-100 dark:ring-slate-700 flex-shrink-0">
+                          <img
+                            src={item.image}
+                            alt={item.name[lang]}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0 pr-4">
+                          <p className="font-black text-slate-900 dark:text-white text-sm tracking-tight truncate">
+                            {item.name[lang] || item.name["en"]}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-black text-slate-900 dark:text-white text-sm tracking-tight">
-                          {item.name[lang] || item.name["en"]}
-                        </p>
-                        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">
-                          {lang === "es" ? "Cant." : "Qty"}: {item.quantity}
-                        </p>
+
+                      <div className="flex items-center gap-4 flex-shrink-0">
+                        <div className="flex items-center bg-white dark:bg-slate-800 rounded-2xl p-1 gap-1 border border-slate-100 dark:border-slate-700 shadow-sm">
+                          <button
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity - 1)
+                            }
+                            className="h-11 w-11 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-400 hover:text-red-500 transition-colors"
+                          >
+                            <span className="font-black text-xl">-</span>
+                          </button>
+                          <span className="w-8 text-center font-black text-slate-900 dark:text-white text-sm">
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
+                            className="h-11 w-11 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-400 hover:text-brand-yellow-600 transition-colors"
+                          >
+                            <span className="font-black text-xl">+</span>
+                          </button>
+                        </div>
+                        <span className="font-black text-slate-900 dark:text-white text-sm min-w-[70px] text-right">
+                          ${(item.price * item.quantity).toFixed(2)}
+                        </span>
                       </div>
                     </div>
-                    <span className="font-black text-slate-900 dark:text-white text-sm">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
 
-              <div className="mt-8 pt-8 border-t border-slate-50 dark:border-slate-800 space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">
-                    Subtotal
-                  </span>
-                  <span className="font-bold text-slate-900 dark:text-white text-sm">
-                    ${getTotal().toFixed(2)}
-                  </span>
+              {/* Scroll Indicator Overlay */}
+              {items.length > 3 && showScrollHint && (
+                <div className="absolute bottom-[90px] left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-slate-900 to-transparent pointer-events-none z-20 flex items-end justify-center pb-2">
+                  <div className="flex items-center gap-2 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm px-3 py-1 rounded-full animate-bounce shadow-sm border border-slate-200 dark:border-slate-700">
+                    <span className="text-[8px] font-black uppercase text-slate-500">
+                      Desliza para ver más
+                    </span>
+                    <ChevronDown className="h-3 w-3 text-slate-500" />
+                  </div>
                 </div>
+              )}
+
+              <div className="mt-8 pt-8 border-t border-slate-50 dark:border-slate-800 space-y-4">
                 <div className="flex justify-between items-center pt-4">
                   <span className="text-slate-900 dark:text-white font-black uppercase tracking-[0.2em] text-xs">
                     Total
@@ -166,61 +211,51 @@ export default function CheckoutPage() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => setPaymentMethod("qr")}
-                className={`flex items-center gap-6 p-8 rounded-[2rem] border-2 transition-all text-left group ${paymentMethod === "qr" ? "bg-brand-yellow-500 border-brand-yellow-500 shadow-lg shadow-brand-yellow-200" : "bg-white dark:bg-slate-900 border-transparent hover:border-slate-200 dark:hover:border-slate-800"}`}
+                className={`flex flex-col items-center justify-center gap-4 p-6 rounded-[2rem] border-2 transition-all text-center group ${paymentMethod === "qr" ? "bg-brand-yellow-500 border-brand-yellow-500 shadow-lg shadow-brand-yellow-200" : "bg-slate-100 dark:bg-slate-900 border-transparent hover:border-slate-200 dark:hover:border-slate-800"}`}
               >
                 <div
-                  className={`h-16 w-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${paymentMethod === "qr" ? "bg-white text-brand-yellow-900" : "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"}`}
+                  className={`h-14 w-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${paymentMethod === "qr" ? "bg-white text-brand-yellow-900" : "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"}`}
                 >
-                  <QrCode className="h-8 w-8" />
+                  <QrCode className="h-7 w-7" />
                 </div>
                 <div>
                   <h3
-                    className={`font-black uppercase tracking-widest text-sm ${paymentMethod === "qr" ? "text-brand-yellow-950" : "text-slate-900 dark:text-white"}`}
+                    className={`font-black uppercase tracking-widest text-[10px] ${paymentMethod === "qr" ? "text-brand-yellow-950" : "text-slate-900 dark:text-white"}`}
                   >
                     {t("checkout.qr")}
                   </h3>
-                  <p
-                    className={`text-[10px] font-bold ${paymentMethod === "qr" ? "text-brand-yellow-800" : "text-slate-400"}`}
-                  >
-                    Instant scan & pay via bank app
-                  </p>
                 </div>
               </button>
 
               <button
                 onClick={() => setPaymentMethod("transfer")}
-                className={`flex items-center gap-6 p-8 rounded-[2rem] border-2 transition-all text-left group ${paymentMethod === "transfer" ? "bg-brand-yellow-500 border-brand-yellow-500 shadow-lg shadow-brand-yellow-200" : "bg-white dark:bg-slate-900 border-transparent hover:border-slate-200 dark:hover:border-slate-800"}`}
+                className={`flex flex-col items-center justify-center gap-4 p-6 rounded-[2rem] border-2 transition-all text-center group ${paymentMethod === "transfer" ? "bg-brand-yellow-500 border-brand-yellow-500 shadow-lg shadow-brand-yellow-200" : "bg-slate-100 dark:bg-slate-900 border-transparent hover:border-slate-200 dark:hover:border-slate-800"}`}
               >
                 <div
-                  className={`h-16 w-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${paymentMethod === "transfer" ? "bg-white text-brand-yellow-900" : "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"}`}
+                  className={`h-14 w-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${paymentMethod === "transfer" ? "bg-white text-brand-yellow-900" : "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"}`}
                 >
-                  <Building2 className="h-8 w-8" />
+                  <Building2 className="h-7 w-7" />
                 </div>
                 <div>
                   <h3
-                    className={`font-black uppercase tracking-widest text-sm ${paymentMethod === "transfer" ? "text-brand-yellow-950" : "text-slate-900 dark:text-white"}`}
+                    className={`font-black uppercase tracking-widest text-[10px] ${paymentMethod === "transfer" ? "text-brand-yellow-950" : "text-slate-900 dark:text-white"}`}
                   >
                     {t("checkout.transfer")}
                   </h3>
-                  <p
-                    className={`text-[10px] font-bold ${paymentMethod === "transfer" ? "text-brand-yellow-800" : "text-slate-400"}`}
-                  >
-                    {t("checkout.transfer_desc")}
-                  </p>
                 </div>
               </button>
 
               <button
                 onClick={() => setPaymentMethod("cash")}
-                className={`flex items-center gap-6 p-8 rounded-[2rem] border-2 transition-all text-left group ${paymentMethod === "cash" ? "bg-brand-yellow-500 border-brand-yellow-500 shadow-lg shadow-brand-yellow-200" : "bg-white dark:bg-slate-900 border-transparent hover:border-slate-200 dark:hover:border-slate-800"}`}
+                className={`col-span-2 flex items-center gap-6 p-6 rounded-[2rem] border-2 transition-all text-left group ${paymentMethod === "cash" ? "bg-brand-yellow-500 border-brand-yellow-500 shadow-lg shadow-brand-yellow-200" : "bg-slate-100 dark:bg-slate-900 border-transparent hover:border-slate-200 dark:hover:border-slate-800"}`}
               >
                 <div
-                  className={`h-16 w-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${paymentMethod === "cash" ? "bg-white text-brand-yellow-900" : "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"}`}
+                  className={`h-14 w-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${paymentMethod === "cash" ? "bg-white text-brand-yellow-900" : "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"}`}
                 >
-                  <Banknote className="h-8 w-8" />
+                  <Banknote className="h-7 w-7" />
                 </div>
                 <div>
                   <h3
@@ -239,7 +274,7 @@ export default function CheckoutPage() {
 
             <Button
               size="lg"
-              className="w-full h-20 rounded-[2.5rem] font-black text-lg uppercase tracking-widest shadow-2xl"
+              className={`w-full h-20 rounded-[2.5rem] font-black text-lg uppercase tracking-widest transition-all ${!paymentMethod ? "bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed opacity-60" : "shadow-2xl"}`}
               disabled={!paymentMethod || isProcessing}
               onClick={handlePayment}
             >
@@ -248,15 +283,14 @@ export default function CheckoutPage() {
                   <Loader2 className="h-6 w-6 mr-3 animate-spin" />
                   {t("checkout.processing")}
                 </>
+              ) : !paymentMethod ? (
+                <span className="text-lg tracking-normal normal-case opacity-80">
+                  Selecciona un método de pago para continuar
+                </span>
               ) : (
                 t("checkout.confirm")
               )}
             </Button>
-
-            <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-              <ShieldCheck className="h-4 w-4" />
-              {t("checkout.secure")}
-            </div>
           </div>
         </div>
       </main>

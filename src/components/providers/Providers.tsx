@@ -40,17 +40,6 @@ function TimeBasedThemeHandler({ children }: { children: React.ReactNode }) {
  * Includes ThemeProvider and the time-based theme logic.
  */
 export function Providers({ children, ...props }: ThemeProviderProps) {
-  const [mounted, setMounted] = useState(false);
-
-  // Avoid hydration mismatch by waiting until mounted
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <div style={{ visibility: 'hidden' }}>{children}</div>;
-  }
-
   return (
     <NextThemesProvider 
       attribute="class" 

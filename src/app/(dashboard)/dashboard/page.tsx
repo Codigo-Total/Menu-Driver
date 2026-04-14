@@ -18,7 +18,9 @@ import {
   Moon,
   Sun,
   Layers,
-  ShoppingBag
+  ShoppingBag,
+  Globe,
+  Settings2
 } from 'lucide-react';
 import { Product, Category } from '@/types/menu.types';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,8 +34,10 @@ export default function DashboardPage() {
   const { categories, addCategory, updateCategory, deleteCategory } = useCategoryStore();
   const { logout } = useAuthStore();
   const router = useRouter();
-  const { t, lang } = useLangStore();
+  const { t, lang, setLanguage, hydrated } = useLangStore();
   const { theme, setTheme } = useTheme();
+  
+  if (!hydrated) return null;
   
   const [activeTab, setActiveTab] = useState<'products' | 'categories'>('products');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,14 +80,32 @@ export default function DashboardPage() {
     }
   };
 
+  const [isManualMode, setIsManualMode] = useState(false);
+
   const openEditModal = (item: Product | Category) => {
     setEditingItem(item);
     setIsModalOpen(true);
   };
 
+  const renderHeaderAction = (
+    <button
+      type="button"
+      onClick={() => setIsManualMode(!isManualMode)}
+      className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[11px] font-black tracking-wider transition-all",
+        isManualMode 
+          ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-2xl shadow-brand-yellow-500/30" 
+          : "bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700"
+      )}
+    >
+      {isManualMode ? <Settings2 className="h-4 w-4" /> : <Globe className="h-4 w-4" />}
+      {isManualMode ? t('admin.manual_mode') : t('admin.auto_translate')}
+    </button>
+  );
+
   const getCategoryName = (id: string) => {
     const cat = categories.find(c => c.id === id);
-    return cat ? (cat.name[lang] || cat.name.es) : 'Sin categoría';
+    return cat ? (cat.name[lang] || cat.name.es) : t('admin.no_category');
   };
 
   return (
@@ -98,7 +120,7 @@ export default function DashboardPage() {
               activeTab === 'products' ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-lg shadow-brand-yellow-500/20" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             )}
           >
-            <ShoppingBag className="h-4 w-4" /> PRODUCTOS
+            <ShoppingBag className="h-4 w-4" /> {t('admin.products_uppercase')}
           </button>
           <button 
             onClick={() => setActiveTab('categories')}
@@ -107,11 +129,33 @@ export default function DashboardPage() {
               activeTab === 'categories' ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-lg shadow-brand-yellow-500/20" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             )}
           >
-            <Layers className="h-4 w-4" /> CATEGORÍAS
+            <Layers className="h-4 w-4" /> {t('admin.categories_uppercase')}
           </button>
         </div>
 
         <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+          {/* Language Switcher */}
+          <div className="flex bg-white dark:bg-slate-900 p-1 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+            <button
+              onClick={() => setLanguage('es')}
+              className={cn(
+                "px-4 py-2 rounded-xl text-[10px] font-black transition-all",
+                lang === 'es' ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-md" : "text-slate-400"
+              )}
+            >
+              ES
+            </button>
+            <button
+              onClick={() => setLanguage('en')}
+              className={cn(
+                "px-4 py-2 rounded-xl text-[10px] font-black transition-all",
+                lang === 'en' ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-md" : "text-slate-400"
+              )}
+            >
+              EN
+            </button>
+          </div>
+
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-slate-400 hover:text-brand-yellow-500 transition-all shadow-sm"
@@ -133,7 +177,9 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-          {activeTab === 'products' ? 'Gestión de Productos' : 'Gestión de Categorías'}
+          {activeTab === 'products' 
+            ? (lang === 'en' ? 'Products Management' : 'Gestión de Productos') 
+            : (lang === 'en' ? 'Categories Management' : 'Gestión de Categorías')}
         </h1>
         <Button 
           onClick={() => {
@@ -152,7 +198,7 @@ export default function DashboardPage() {
         <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-brand-yellow-500 transition-colors" />
         <input
           type="text"
-          placeholder={activeTab === 'products' ? t('admin.search_products') : 'Buscar categorías...'}
+          placeholder={activeTab === 'products' ? t('admin.search_products') : t('admin.search_categories')}
           className="w-full pl-16 pr-8 py-4 sm:py-5 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:border-brand-yellow-500 outline-none transition-all shadow-sm text-sm sm:text-base"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -174,11 +220,11 @@ export default function DashboardPage() {
                 <table className="w-full text-left border-collapse min-w-[600px] md:min-w-full">
                   <thead>
                     <tr className="border-b border-slate-50 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/20">
-                      <th className="px-4 sm:px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Imagen</th>
-                      <th className="px-4 sm:px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Nombre</th>
-                      <th className="hidden md:table-cell px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Categoría</th>
-                      <th className="hidden sm:table-cell px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Precio</th>
-                      <th className="px-4 sm:px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">Acciones</th>
+                      <th className="px-4 sm:px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('admin.image')}</th>
+                      <th className="px-4 sm:px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('admin.name')}</th>
+                      <th className="hidden md:table-cell px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('admin.category')}</th>
+                      <th className="hidden sm:table-cell px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('admin.price')}</th>
+                      <th className="px-4 sm:px-8 py-7 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right">{t('admin.actions')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
@@ -251,7 +297,7 @@ export default function DashboardPage() {
                       {category.name[lang] || category.name.es}
                     </h3>
                     <p className="text-slate-400 dark:text-slate-500 font-bold mt-2 uppercase tracking-widest text-[10px]">
-                      {products.filter(p => p.categoryId === category.id).length} PRODUCTOS
+                      {products.filter(p => p.categoryId === category.id).length} {t('admin.products_uppercase')}
                     </p>
                   </div>
                 </motion.div>
@@ -264,7 +310,9 @@ export default function DashboardPage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8">
         <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-none transition-all hover:scale-[1.02] cursor-default">
-          <p className="text-sm font-black text-slate-400 dark:text-slate-500 mb-2 uppercase tracking-widest">{activeTab === 'products' ? t('admin.total_products') : 'Total Categorías'}</p>
+          <p className="text-sm font-black text-slate-400 dark:text-slate-500 mb-2 uppercase tracking-widest">
+            {activeTab === 'products' ? t('admin.total_products') : (lang === 'en' ? 'Total Categories' : 'Total Categorías')}
+          </p>
           <p className="text-6xl font-black text-slate-900 dark:text-white tracking-tighter">{activeTab === 'products' ? products.length : categories.length}</p>
         </div>
         <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-none transition-all hover:scale-[1.02] cursor-default">
@@ -289,10 +337,13 @@ export default function DashboardPage() {
         }}
         size="lg"
         title={editingItem ? (activeTab === 'products' ? t('admin.edit_product') : 'Editar Categoría') : (activeTab === 'products' ? t('admin.add_product') : t('admin.add_category'))}
+        headerAction={renderHeaderAction}
       >
         {activeTab === 'products' ? (
           <ProductForm
             initialData={editingItem as Product}
+            isManualMode={isManualMode}
+            setIsManualMode={setIsManualMode}
             onCancel={() => {
               setIsModalOpen(false);
               setEditingItem(undefined);
@@ -302,6 +353,8 @@ export default function DashboardPage() {
         ) : (
           <CategoryForm
             initialData={editingItem as Category}
+            isManualMode={isManualMode}
+            setIsManualMode={setIsManualMode}
             onCancel={() => {
               setIsModalOpen(false);
               setEditingItem(undefined);

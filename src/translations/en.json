@@ -104,11 +104,23 @@
     "products_in_stock": "Products in Stock",
     "out_of_stock": "Out of Stock",
     "categories_title": "Categories",
+    "manage_products": "Products Management",
+    "manage_categories": "Categories Management",
+    "total_categories": "Total Categories",
+    "search_categories": "Search categories...",
+    "name": "Name",
+    "image": "Image",
+    "no_category": "No category",
+    "products_uppercase": "PRODUCTS",
+    "categories_uppercase": "CATEGORIES",
     "add_category": "New Category",
     "category_name": "Category Name",
     "upload_image": "Upload from device",
     "image_source": "Image source",
     "url_image": "Link (URL)",
-    "choose_file": "Choose File"
+    "choose_file": "Choose File",
+    "manual_mode": "MANUAL EDIT",
+    "auto_translate": "AUTO SYNC",
+    "save_changes": "Save Changes"
   }
 }

@@ -12,7 +12,9 @@ import {
   Trash2, 
   AlertCircle,
   Package,
-  ArrowUpRight
+  ArrowUpRight,
+  Globe,
+  Settings2
 } from 'lucide-react';
 import { Product } from '@/types/menu.types';
 import { motion } from 'framer-motion';
@@ -31,6 +33,8 @@ export default function AdminProductsPage() {
     p.name.en.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const [isManualMode, setIsManualMode] = useState(false);
+
   const handleCreate = (data: Omit<Product, 'id'>) => {
     addProduct(data);
     setIsModalOpen(false);
@@ -48,6 +52,22 @@ export default function AdminProductsPage() {
     setEditingProduct(product);
     setIsModalOpen(true);
   };
+
+  const renderHeaderAction = (
+    <button
+      type="button"
+      onClick={() => setIsManualMode(!isManualMode)}
+      className={cn(
+        "flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[11px] font-black tracking-wider transition-all",
+        isManualMode 
+          ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-2xl shadow-brand-yellow-500/30" 
+          : "bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-700"
+      )}
+    >
+      {isManualMode ? <Settings2 className="h-4 w-4" /> : <Globe className="h-4 w-4" />}
+      {isManualMode ? t('admin.manual_mode') : t('admin.auto_translate')}
+    </button>
+  );
 
   return (
     <div className="space-y-8 pb-12 transition-colors duration-500">
@@ -137,7 +157,6 @@ export default function AdminProductsPage() {
                         </div>
                         <div>
                           <p className="font-bold text-slate-900 dark:text-white">{product.name[lang] || product.name.es}</p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[200px]">{product.description[lang] || product.description.es}</p>
                         </div>
                       </div>
                     </td>
@@ -205,9 +224,12 @@ export default function AdminProductsPage() {
           setEditingProduct(undefined);
         }}
         title={editingProduct ? t('admin.edit_product') : t('admin.add_product')}
+        headerAction={renderHeaderAction}
       >
         <ProductForm
           initialData={editingProduct}
+          isManualMode={isManualMode}
+          setIsManualMode={setIsManualMode}
           onCancel={() => {
             setIsModalOpen(false);
             setEditingProduct(undefined);

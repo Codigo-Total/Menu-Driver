@@ -1,8 +1,11 @@
 {
   "welcome": {
     "title": "Bienvenido a Menu Driver",
-    "subtitle": "Tu tienda personal durante el viaje",
-    "start_button": "Pedir Ahora",
+    "headline": "¿Te hace falta algo?",
+    "subtitle": "Todo lo que podés necesitar durante tu viaje",
+    "cta": "Toca para ver el menú",
+    "badge": "Disponible ahora",
+    "start_button": "Toca para comenzar",
     "language_select": "Seleccionar Idioma"
   },
   "menu": {

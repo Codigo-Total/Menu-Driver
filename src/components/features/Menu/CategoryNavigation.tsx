@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Category } from '@/types/menu.types';
-import { useLangStore } from '@/store/lang/lang.slice';
-import { cn } from '@/lib/cn';
-import * as Icons from 'lucide-react';
+import { Category } from "@/types/menu.types";
+import { useLangStore } from "@/store/lang/lang.slice";
+import { cn } from "@/lib/cn";
+import * as Icons from "lucide-react";
 
 interface CategoryTabsProps {
   categories: Category[];
@@ -12,9 +12,9 @@ interface CategoryTabsProps {
 }
 
 /**
- * Mobile-First Circular Category Navigation.
- * Optimized for Uber rides: Large touch targets, horizontal scroll, and icon-first design.
- * Matching the premium "What you like?" style from the reference mockup.
+ * Premium Category Navigation Pills — Tablet Optimized.
+ * Typography scaled for arm's-length reading.
+ * Touch targets ≥ 48px height. Horizontal scroll with snap.
  */
 export const CategoryTabs = ({
   categories,
@@ -26,54 +26,47 @@ export const CategoryTabs = ({
   if (!hydrated) return null;
 
   return (
-    <div className="w-full overflow-x-auto no-scrollbar py-4 sm:py-6">
-      <div className="flex items-start gap-4 px-4 sm:px-6">
-        {/* "All" Category - Squarer Mode */}
-        <div className="flex flex-col items-center gap-2 group min-w-[70px] sm:min-w-[90px]">
-          <button
-            onClick={() => onSelectCategory(null)}
-            className={cn(
-              'h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 active:scale-90 border-2',
-              activeCategoryId === null
-                ? 'bg-brand-yellow-500 border-brand-yellow-400 shadow-xl shadow-brand-yellow-500/20 text-brand-yellow-950'
-                : 'bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:border-brand-yellow-200'
-            )}
-          >
-            <Icons.LayoutGrid className="h-6 w-6 sm:h-8 sm:w-8" />
-          </button>
-          <span className={cn(
-            "text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-center transition-colors",
-            activeCategoryId === null ? "text-brand-yellow-600" : "text-slate-400"
-          )}>
-            {t('menu.all')}
-          </span>
-        </div>
+    <div className="w-full overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2.5 px-2">
+        {/* "All" Category Pill */}
+        <button
+          onClick={() => onSelectCategory(null)}
+          className={cn(
+            "flex items-center gap-2.5 h-12 px-6 rounded-full transition-all duration-300 active:scale-95 whitespace-nowrap shrink-0",
+            activeCategoryId === null
+              ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-[0_8px_20px_rgba(234,179,8,0.3)] font-extrabold border-2 border-brand-yellow-400"
+              : "bg-slate-100 dark:bg-white/4 border border-slate-200 dark:border-white/6 text-slate-500 dark:text-white/40 hover:bg-slate-200 dark:hover:bg-white/8 hover:text-slate-700 dark:hover:text-white/60 font-semibold",
+          )}
+        >
+          <Icons.LayoutGrid className="h-[18px] w-[18px]" />
+          <span className="text-xs uppercase tracking-[0.12em]">{t("menu.all")}</span>
+        </button>
 
-        {/* Dynamic Categories */}
+        {/* Subtle separator */}
+        <div className="h-5 w-px bg-slate-200 dark:bg-white/6 shrink-0" />
+
+        {/* Dynamic Category Pills */}
         {categories.map((category) => {
-          const IconComponent = (Icons as unknown as Record<string, Icons.LucideIcon>)[category.icon] || Icons.Circle;
+          const IconComponent =
+            (Icons as unknown as Record<string, Icons.LucideIcon>)[category.icon] || Icons.Circle;
           const isActive = activeCategoryId === category.id;
-          
+
           return (
-            <div key={category.id} className="flex flex-col items-center gap-2 group min-w-[70px] sm:min-w-[90px]">
-              <button
-                onClick={() => onSelectCategory(category.id)}
-                className={cn(
-                  'h-16 w-16 sm:h-20 sm:w-20 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 active:scale-90 border-2',
-                  isActive
-                    ? 'bg-brand-yellow-500 border-brand-yellow-400 shadow-xl shadow-brand-yellow-500/20 text-brand-yellow-950'
-                    : 'bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-400 dark:text-slate-500 hover:border-brand-yellow-200'
-                )}
-              >
-                <IconComponent className="h-6 w-6 sm:h-8 sm:w-8" />
-              </button>
-              <span className={cn(
-                "text-[9px] sm:text-[10px] font-black uppercase tracking-[0.1em] text-center transition-colors max-w-[70px] sm:max-w-[80px] break-words line-clamp-1 leading-tight font-display",
-                isActive ? "text-brand-yellow-600" : "text-slate-400"
-              )}>
-                {category.name[lang] || category.name['en']}
+            <button
+              key={category.id}
+              onClick={() => onSelectCategory(category.id)}
+              className={cn(
+                "flex items-center gap-2.5 h-12 px-6 rounded-full transition-all duration-300 active:scale-95 whitespace-nowrap shrink-0",
+                isActive
+                  ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-[0_8px_20px_rgba(234,179,8,0.3)] font-extrabold border-2 border-brand-yellow-400"
+                  : "bg-slate-100 dark:bg-white/4 border border-slate-200 dark:border-white/6 text-slate-500 dark:text-white/40 hover:bg-slate-200 dark:hover:bg-white/8 hover:text-slate-700 dark:hover:text-white/60 font-semibold",
+              )}
+            >
+              <IconComponent className="h-[18px] w-[18px]" />
+              <span className="text-xs uppercase tracking-[0.12em]">
+                {category.name[lang] || category.name["en"]}
               </span>
-            </div>
+            </button>
           );
         })}
       </div>

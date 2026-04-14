@@ -1,8 +1,11 @@
 {
   "welcome": {
     "title": "Welcome to Menu Driver",
-    "subtitle": "Your personal shop during the ride",
-    "start_button": "Order Now",
+    "headline": "Need anything?",
+    "subtitle": "Everything you might need during your ride",
+    "cta": "Tap to see the menu",
+    "badge": "Available now",
+    "start_button": "Tap to start",
     "language_select": "Select Language"
   },
   "menu": {

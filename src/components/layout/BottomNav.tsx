@@ -17,10 +17,8 @@ interface NavItemProps {
   badge?: number;
 }
 
-<<<<<<< agustin
-const NavItem = ({ id, href, onClick, icon: Icon, label, isActive, badge }: NavItemProps) => {
-=======
 const NavItem = ({
+  id,
   href,
   onClick,
   icon: Icon,
@@ -28,7 +26,6 @@ const NavItem = ({
   isActive,
   badge,
 }: NavItemProps) => {
->>>>>>> dev
   const content = (
     <div className="flex flex-col items-center justify-center gap-1.5 w-full h-full relative transition-all duration-500">
       <div
@@ -40,14 +37,10 @@ const NavItem = ({
         )}
       >
         <Icon
-<<<<<<< agustin
-          className={cn("h-6 w-6 transition-transform duration-500", isActive && "scale-110")}
-=======
           className={cn(
             "h-6 w-6 transition-transform duration-500",
             isActive && "scale-110",
           )}
->>>>>>> dev
         />
 
         {/* Glow effect for active item */}
@@ -87,11 +80,7 @@ const NavItem = ({
   }
 
   return (
-<<<<<<< agustin
     <Link id={id} href={href || "#"} className={className}>
-=======
-    <Link href={href || "#"} className={className}>
->>>>>>> dev
       {content}
     </Link>
   );
@@ -127,10 +116,7 @@ export const BottomNav = () => {
           isActive={pathname === "/games"}
         />
         <NavItem
-<<<<<<< agustin
           id="cart-icon-target"
-=======
->>>>>>> dev
           onClick={() => setIsCartOpen(true)}
           icon={ShoppingBag}
           label={t("menu.order") || "Carrito"}

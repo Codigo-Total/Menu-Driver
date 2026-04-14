@@ -4,7 +4,6 @@ import { useRef, useState, useEffect } from "react";
 import { Product } from "@/types/menu.types";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { useCartStore } from "@/store/cart/cart.slice";
-import { useToastStore } from "@/store/ui/toast.slice";
 import { useFlyToCartStore } from "@/store/ui/flyToCart.slice";
 import { Plus, Star, Flame } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -26,7 +25,7 @@ const CarouselCard = ({ product, lang }: { product: Product; lang: string }) => 
   return (
     <div
       onClick={() => router.push(`/product/${product.id}`)}
-      className="group relative flex-shrink-0 w-[calc(50%-8px)] min-w-[300px] h-[180px] rounded-2xl overflow-hidden cursor-pointer snap-start
+      className="group relative flex-shrink-0 w-[85vw] sm:w-[calc(45%-8px)] lg:w-[calc(43%-8px)] min-w-[320px] max-w-[600px] h-[180px] rounded-2xl overflow-hidden cursor-pointer snap-start
         transition-all duration-500
         shadow-[0_10px_40px_rgb(0,0,0,0.1)] dark:shadow-[0_10px_40px_rgb(0,0,0,0.4)]
         border border-slate-200/50 dark:border-white/5
@@ -123,7 +122,12 @@ const CarouselCard = ({ product, lang }: { product: Product; lang: string }) => 
 export const FeaturedCarousel = ({ products }: FeaturedCarouselProps) => {
   const { lang, hydrated } = useLangStore();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrollMetrics, setScrollMetrics] = useState({ activeIndex: 0, totalPages: 1 });
+  const [scrollMetrics, setScrollMetrics] = useState({
+    activeIndex: 0,
+    totalPages: 1,
+    isAtStart: true,
+    isAtEnd: false,
+  });
 
   const updateScrollMetrics = () => {
     if (!scrollRef.current) return;
@@ -155,9 +159,15 @@ export const FeaturedCarousel = ({ products }: FeaturedCarouselProps) => {
       index = Math.round(scrollProgress * (pages - 1));
     }
 
+    // Un margen de 40px garantiza cubrir el padding interno (px-4) y rebotes
+    const isAtStart = scrollLeft <= 40;
+    const isAtEnd = maxScrollLeft <= 0 || maxScrollLeft - scrollLeft <= 40;
+
     setScrollMetrics({
       activeIndex: Math.max(0, Math.min(index, Math.max(0, pages - 1))),
       totalPages: Math.max(1, pages),
+      isAtStart,
+      isAtEnd,
     });
   };
 
@@ -195,14 +205,32 @@ export const FeaturedCarousel = ({ products }: FeaturedCarouselProps) => {
         <div className="flex-1 h-px bg-linear-to-r from-orange-500/20 to-transparent" />
       </div>
 
-      {/* Horizontal Scroll Container */}
-      <div
-        ref={scrollRef}
-        className="flex gap-4 overflow-x-auto no-scrollbar px-2 snap-x snap-mandatory pb-4"
-      >
-        {products.map((product) => (
-          <CarouselCard key={product.id} product={product} lang={lang} />
-        ))}
+      {/* Horizontal Scroll Container Wrapper */}
+      <div className="relative w-full group/carousel flex items-center">
+        {/* Left Fade */}
+        <div
+          className={cn(
+            "absolute left-0 top-0 bottom-4 w-6 md:w-10 z-20 pointer-events-none transition-opacity duration-500 bg-linear-to-r from-black/10 dark:from-black/40 to-transparent",
+            scrollMetrics.isAtStart ? "opacity-0" : "opacity-100",
+          )}
+        />
+
+        {/* Right Fade */}
+        <div
+          className={cn(
+            "absolute right-0 top-0 bottom-4 w-8 md:w-14 z-20 pointer-events-none transition-opacity duration-500 bg-linear-to-l from-black/10 dark:from-black/40 to-transparent",
+            scrollMetrics.isAtEnd ? "opacity-0" : "opacity-100",
+          )}
+        />
+
+        <div
+          ref={scrollRef}
+          className="flex gap-4 overflow-x-auto no-scrollbar px-4 pb-4 w-full snap-x snap-mandatory"
+        >
+          {products.map((product) => (
+            <CarouselCard key={product.id} product={product} lang={lang} />
+          ))}
+        </div>
       </div>
 
       {/* Pagination Dots */}

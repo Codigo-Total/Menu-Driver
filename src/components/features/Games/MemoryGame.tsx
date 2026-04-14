@@ -1,14 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
 import { useLangStore } from '@/store/lang/lang.slice';
-import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/cn';
-import { Timer, Trophy, RotateCcw, BrainCircuit } from 'lucide-react';
-import ReactConfetti from 'react-confetti';
-import { useWindowSize } from 'react-use';
+import { BrainCircuit, RotateCcw } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-// Interactive pairs for the kiosk experience
 const FOOD_EMOJIS = ['🍔', '🍕', '🌮', '🍣', '🍦', '🍩', '🍟', '🥤'];
 
 interface Card {
@@ -18,13 +15,19 @@ interface Card {
   isMatched: boolean;
 }
 
+interface MemoryGameProps {
+  onWin: (stats: { time: number; moves: number }) => void;
+}
+
+export interface MemoryGameHandle {
+  restart: () => void;
+}
+
 /**
- * Premium Memory Match Game.
- * Features: Confetti on win, move counter, timer, and high-contrast design.
+ * Premium Memory Match Game for GameStage.
  */
-export const MemoryGame = () => {
-  const { t, hydrated } = useLangStore();
-  const { width, height } = useWindowSize();
+const MemoryGame = forwardRef<MemoryGameHandle, MemoryGameProps>(({ onWin }, ref) => {
+  const { t, lang, hydrated } = useLangStore();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -50,6 +53,10 @@ export const MemoryGame = () => {
     setElapsedTime(0);
   }, []);
 
+  useImperativeHandle(ref, () => ({
+    restart: initGame
+  }));
+
   useEffect(() => {
     initGame();
   }, [initGame]);
@@ -68,8 +75,7 @@ export const MemoryGame = () => {
     if (isWon || flippedCards.length === 2 || cards[id].isFlipped || cards[id].isMatched) return;
 
     if (!startTime) {
-      const now = Date.now();
-      setStartTime(now);
+      setStartTime(Date.now());
     }
 
     setCards(prev => prev.map(card => 
@@ -90,9 +96,6 @@ export const MemoryGame = () => {
             : card
         ));
         setFlippedCards([]);
-        
-        // Use a timeout or functional check to see if all are matched
-        // since state updates are async
       } else {
         setTimeout(() => {
           setCards(prev => prev.map(card => 
@@ -101,91 +104,113 @@ export const MemoryGame = () => {
               : card
           ));
           setFlippedCards([]);
-        }, 1000);
+        }, 800);
       }
     }
   };
 
-  // Effect to check win condition after cards update
   useEffect(() => {
-    if (cards.length > 0 && cards.every(card => card.isMatched)) {
+    if (cards.length > 0 && cards.every(card => card.isMatched) && !isWon) {
       setIsWon(true);
+      onWin({ time: elapsedTime, moves });
     }
-  }, [cards]);
+  }, [cards, isWon, onWin, elapsedTime, moves]);
 
   if (!hydrated) return null;
 
   return (
-    <div className="flex flex-col items-center bg-white dark:bg-slate-900 p-4 sm:p-12 rounded-3xl lg:rounded-[3rem] shadow-2xl border-2 sm:border-4 border-slate-50 dark:border-slate-800">
-      {isWon && <ReactConfetti width={width} height={height} recycle={false} numberOfPieces={300} colors={['#eab308', '#facc15']} />}
-      
-      {/* HUD Bar */}
-      <div className="w-full flex items-center justify-between mb-8 sm:mb-12 bg-slate-50 dark:bg-slate-950 p-4 sm:p-6 rounded-3xl sm:rounded-4xl ring-1 ring-slate-100 dark:ring-slate-800 shadow-inner">
-        <div className="flex items-center gap-2 sm:gap-6">
-          <div className="flex flex-col items-center px-4 sm:px-6 border-r border-slate-200 dark:border-slate-800">
-            <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-400 mb-1">{t('games.moves')}</span>
-            <span className="text-xl sm:text-3xl font-display font-black text-slate-900 dark:text-white">{moves}</span>
-          </div>
-          <div className="flex flex-col items-center px-4 sm:px-6">
-            <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-slate-400 mb-1">{t('games.time')}</span>
-            <div className="flex items-center gap-1 sm:gap-2 text-xl sm:text-3xl font-display font-black text-slate-900 dark:text-white">
-              <Timer className="h-4 w-4 sm:h-6 sm:w-6 text-brand-yellow-500" />
-              {elapsedTime}s
-            </div>
-          </div>
-        </div>
-
-        <Button 
-          variant="ghost" 
-          onClick={initGame} 
-          className="h-10 w-10 sm:h-16 sm:w-16 p-0 rounded-lg sm:rounded-full bg-white dark:bg-slate-800 hover:rotate-180 transition-transform duration-500 shadow-md"
-        >
-          <RotateCcw className="h-4 w-4 sm:h-6 sm:w-6" />
-        </Button>
-      </div>
-
-      {/* Grid */}
-      <div className="grid grid-cols-4 gap-2 sm:gap-6 max-w-2xl w-full">
-        {cards.map((card) => (
-          <div
-            key={card.id}
-            onClick={() => handleCardClick(card.id)}
-            className={cn(
-              "relative aspect-square cursor-pointer rounded-xl sm:rounded-3xl transition-all duration-500 preserve-3d perspective-1000 transform-gpu",
-              (card.isFlipped || card.isMatched) ? "rotate-y-180" : "hover:scale-105 active:scale-95"
-            )}
-          >
-            {/* Front of card (Hidden emoji) */}
-            <div className={cn(
-               "absolute inset-0 backface-hidden rounded-xl sm:rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-transparent shadow-md flex items-center justify-center transition-all",
-               (!card.isFlipped && !card.isMatched) && "hover:bg-brand-yellow-400 dark:hover:bg-brand-yellow-900/50 hover:border-brand-yellow-500"
-            )}>
-              <BrainCircuit className="h-6 w-6 sm:h-8 sm:w-8 text-slate-300 dark:text-slate-700" />
-            </div>
-            
-            {/* Back of card (Emoji revealed) */}
-            <div className={cn(
-              "absolute inset-0 backface-hidden rounded-xl sm:rounded-3xl rotate-y-180 flex items-center justify-center text-2xl sm:text-5xl border-2 sm:border-4 shadow-xl",
-              card.isMatched ? "bg-green-500 border-green-400" : "bg-white dark:bg-slate-800 border-brand-yellow-500"
-            )}>
-              {card.emoji}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Winning State UI */}
-      {isWon && (
-        <div className="mt-8 sm:mt-12 text-center animate-in zoom-in duration-500">
-          <div className="inline-flex items-center gap-4 bg-slate-900 text-white px-6 sm:px-10 py-3 sm:py-5 rounded-xl sm:rounded-[2rem] shadow-2xl">
-            <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-brand-yellow-500" />
-            <div className="text-left">
-              <h4 className="font-black uppercase tracking-tighter text-lg sm:text-xl">{t('games.congrats')}</h4>
-              <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-rose-100 opacity-80 leading-none">Puzzle Master</p>
-            </div>
+    <div className="w-full h-full flex flex-col items-center justify-center max-w-2xl px-4 overflow-hidden">
+      {/* Visual HUD */}
+      <div className="w-full flex justify-between mb-4 sm:mb-8 shrink-0">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+            {lang === 'es' ? 'Progreso' : 'Progress'}
+          </span>
+          <div className="flex gap-1 mt-1">
+            {Array.from({ length: FOOD_EMOJIS.length }).map((_, i) => (
+              <div 
+                key={i} 
+                className={cn(
+                  "h-1.5 w-4 sm:w-6 rounded-full transition-all duration-500",
+                  i < cards.filter(c => c.isMatched).length / 2 
+                    ? "bg-brand-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" 
+                    : "bg-slate-200 dark:bg-slate-800"
+                )} 
+              />
+            ))}
           </div>
         </div>
-      )}
+        
+        <div className="flex flex-col items-end">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+            {lang === 'es' ? 'Tiempo' : 'Time'}
+          </span>
+          <div className="flex items-center gap-3">
+            <p className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tabular-nums">{elapsedTime}s</p>
+            <button 
+              onClick={initGame}
+              className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-brand-yellow-600 transition-colors"
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative w-full aspect-square max-h-[55vh] sm:max-h-[60vh] flex items-center justify-center">
+        <div className="grid grid-cols-4 grid-rows-4 gap-2 sm:gap-4 w-full h-full">
+          {cards.map((card) => (
+            <div
+              key={card.id}
+              onClick={() => handleCardClick(card.id)}
+              className={cn(
+                "relative cursor-pointer rounded-xl sm:rounded-[2rem] transition-all duration-500 preserve-3d perspective-1000 transform-gpu",
+                (card.isFlipped || card.isMatched) ? "rotate-y-180" : "hover:scale-105 active:scale-95"
+              )}
+            >
+              <div className={cn(
+                 "absolute inset-0 backface-hidden rounded-xl sm:rounded-[2rem] bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 shadow-lg flex items-center justify-center transition-all",
+                 (!card.isFlipped && !card.isMatched) && "hover:border-brand-yellow-500 group"
+              )}>
+                <BrainCircuit className="h-6 w-6 sm:h-10 sm:w-10 text-slate-200 dark:text-slate-800 group-hover:text-brand-yellow-500/30 transition-colors" />
+              </div>
+              
+              <div className={cn(
+                "absolute inset-0 backface-hidden rounded-xl sm:rounded-[2rem] rotate-y-180 flex items-center justify-center text-2xl sm:text-4xl border-4 shadow-2xl",
+                card.isMatched 
+                  ? "bg-green-500 border-green-400 text-white" 
+                  : "bg-white dark:bg-slate-900 border-brand-yellow-500 shadow-brand-yellow-500/20"
+              )}>
+                {card.emoji}
+                {card.isMatched && (
+                  <motion.div 
+                    initial={{ scale: 0 }} 
+                    animate={{ scale: 1 }} 
+                    className="absolute inset-0 bg-white/20 rounded-xl sm:rounded-[2rem] pointer-events-none" 
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-6 sm:mt-10 flex items-center gap-4 bg-white/50 dark:bg-slate-900/50 px-6 py-2 rounded-full border border-slate-200 dark:border-slate-800 backdrop-blur-sm shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-indigo-500" />
+          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+            {lang === 'es' ? 'Movimientos' : 'Moves'}: {moves}
+          </span>
+        </div>
+        <div className="h-4 w-px bg-slate-300 dark:bg-slate-700" />
+        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+          {lang === 'es' ? 'Parejas' : 'Pairs'}: {FOOD_EMOJIS.length}
+        </span>
+      </div>
     </div>
   );
-};
+});
+
+MemoryGame.displayName = 'MemoryGame';
+
+export default MemoryGame;

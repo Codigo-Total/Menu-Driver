@@ -17,6 +17,7 @@ export const Modal = ({
   description,
   children,
   footer,
+  headerAction,
   size = 'md',
   showCloseButton = true,
 }: ModalProps) => {
@@ -41,11 +42,17 @@ export const Modal = ({
           )}
         >
           <div className="flex flex-col gap-2">
-            {title && (
-              <Dialog.Title className="text-2xl font-black tracking-tight text-slate-900 dark:text-white">
-                {title}
-              </Dialog.Title>
-            )}
+            <div className="flex items-center justify-between gap-4 pr-10">
+              {title && (
+                <Dialog.Title className={cn(
+                  "text-2xl font-black tracking-tight text-slate-900 dark:text-white uppercase tracking-tighter",
+                  !headerAction && "flex-1"
+                )}>
+                  {title}
+                </Dialog.Title>
+              )}
+              {headerAction}
+            </div>
             {description && (
               <Dialog.Description className="text-sm text-slate-500 dark:text-slate-400">
                 {description}

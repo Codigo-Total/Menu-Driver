@@ -27,7 +27,7 @@ export default function RootLayout({
         className={cn(
           inter.variable,
           plusJakarta.variable,
-          "font-sans antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden",
+          "font-sans antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-500 overflow-x-hidden flex flex-col",
         )}
       >
         <Providers>

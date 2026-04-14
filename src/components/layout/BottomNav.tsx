@@ -17,7 +17,18 @@ interface NavItemProps {
   badge?: number;
 }
 
+<<<<<<< agustin
 const NavItem = ({ id, href, onClick, icon: Icon, label, isActive, badge }: NavItemProps) => {
+=======
+const NavItem = ({
+  href,
+  onClick,
+  icon: Icon,
+  label,
+  isActive,
+  badge,
+}: NavItemProps) => {
+>>>>>>> dev
   const content = (
     <div className="flex flex-col items-center justify-center gap-1.5 w-full h-full relative transition-all duration-500">
       <div
@@ -29,7 +40,14 @@ const NavItem = ({ id, href, onClick, icon: Icon, label, isActive, badge }: NavI
         )}
       >
         <Icon
+<<<<<<< agustin
           className={cn("h-6 w-6 transition-transform duration-500", isActive && "scale-110")}
+=======
+          className={cn(
+            "h-6 w-6 transition-transform duration-500",
+            isActive && "scale-110",
+          )}
+>>>>>>> dev
         />
 
         {/* Glow effect for active item */}
@@ -57,7 +75,8 @@ const NavItem = ({ id, href, onClick, icon: Icon, label, isActive, badge }: NavI
     </div>
   );
 
-  const className = "flex-1 h-full group relative outline-none focus:outline-none";
+  const className =
+    "flex-1 h-full group relative outline-none focus:outline-none";
 
   if (onClick) {
     return (
@@ -68,7 +87,11 @@ const NavItem = ({ id, href, onClick, icon: Icon, label, isActive, badge }: NavI
   }
 
   return (
+<<<<<<< agustin
     <Link id={id} href={href || "#"} className={className}>
+=======
+    <Link href={href || "#"} className={className}>
+>>>>>>> dev
       {content}
     </Link>
   );
@@ -89,7 +112,7 @@ export const BottomNav = () => {
   if (!hydrated) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 h-24 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-t border-slate-100 dark:border-slate-900 pb-safe shadow-[0_-20px_50px_rgba(0,0,0,0.1)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 h-24 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-t border-slate-100 dark:border-slate-900 pb-safe shadow-2xl">
       <div className="container mx-auto h-full flex items-center justify-around px-4">
         <NavItem
           href="/menu"
@@ -104,7 +127,10 @@ export const BottomNav = () => {
           isActive={pathname === "/games"}
         />
         <NavItem
+<<<<<<< agustin
           id="cart-icon-target"
+=======
+>>>>>>> dev
           onClick={() => setIsCartOpen(true)}
           icon={ShoppingBag}
           label={t("menu.order") || "Carrito"}

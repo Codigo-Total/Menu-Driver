@@ -18,7 +18,12 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   }, [lang]);
 
   const isHomePage = pathname === "/";
+<<<<<<< agustin
   const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
+=======
+  const isAdminRoute =
+    pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
+>>>>>>> dev
 
   return (
     <div

@@ -17,17 +17,9 @@ interface NavItemProps {
   badge?: number;
 }
 
-const NavItem = ({
-  id,
-  href,
-  onClick,
-  icon: Icon,
-  label,
-  isActive,
-  badge,
-}: NavItemProps) => {
+const NavItem = ({ id, href, onClick, icon: Icon, label, isActive, badge }: NavItemProps) => {
   const content = (
-    <div className="flex flex-col items-center justify-center gap-1.5 w-full h-full relative transition-all duration-500">
+    <div className="flex flex-row items-center justify-center gap-2 w-full h-full relative transition-all duration-500">
       <div
         className={cn(
           "p-3 rounded-[1.25rem] transition-all duration-500 relative group-active:scale-90",
@@ -37,21 +29,20 @@ const NavItem = ({
         )}
       >
         <Icon
-          className={cn(
-            "h-6 w-6 transition-transform duration-500",
-            isActive && "scale-110",
-          )}
+          className={cn("h-6 w-6 transition-transform duration-500", isActive && "scale-110")}
         />
 
-        {/* Glow effect for active item */}
-        {isActive && (
-          <div className="absolute inset-0 rounded-[1.25rem] bg-brand-yellow-400/20 animate-ping shadow-[0_0_15px_rgba(234,179,8,0.5)]" />
+        {/* Badge over icon */}
+        {badge !== undefined && badge > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white ring-2 ring-white dark:ring-slate-950 shadow-lg animate-bounce px-1">
+            {badge}
+          </span>
         )}
       </div>
 
       <span
         className={cn(
-          "text-[10px] font-black uppercase tracking-[0.15em] leading-none transition-colors duration-500",
+          "text-[13px] font-black uppercase tracking-[0.15em] leading-none transition-colors duration-500",
           isActive
             ? "text-brand-yellow-600 dark:text-brand-yellow-500"
             : "text-slate-400 dark:text-slate-600",
@@ -59,17 +50,10 @@ const NavItem = ({
       >
         {label}
       </span>
-
-      {badge !== undefined && badge > 0 && (
-        <span className="absolute top-1 right-1/2 translate-x-5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white ring-4 ring-white dark:ring-slate-950 shadow-lg animate-bounce">
-          {badge}
-        </span>
-      )}
     </div>
   );
 
-  const className =
-    "flex-1 h-full group relative outline-none focus:outline-none";
+  const className = "flex-1 h-full group relative outline-none focus:outline-none";
 
   if (onClick) {
     return (
@@ -101,7 +85,7 @@ export const BottomNav = () => {
   if (!hydrated) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 h-24 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-t border-slate-100 dark:border-slate-900 pb-safe shadow-2xl">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 h-20 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-t border-slate-100 dark:border-slate-900 pb-safe shadow-2xl">
       <div className="container mx-auto h-full flex items-center justify-around px-4">
         <NavItem
           href="/menu"

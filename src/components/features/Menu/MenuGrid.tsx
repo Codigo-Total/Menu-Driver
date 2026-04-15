@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { ProductCard } from "./ProductCard";
 import { CategoryTabs } from "./CategoryNavigation";
-import { FeaturedCarousel } from "./FeaturedCarousel";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { useProductStore } from "@/store/product/product.slice";
 import { useCategoryStore } from "@/store/category/category.slice";
@@ -24,17 +23,9 @@ export const MenuGrid = () => {
 
   const isCategorySelected = activeCategoryId !== null;
 
-  // El carousel SOLO se muestra en la vista 'TODOS' (sin categoría)
-  const featuredProducts = products.filter((p) => p.isPopular);
-
-  const filteredProducts = products.filter((product) => {
-    // Si hay una categoría seleccionada, la grilla muestra TODOS los productos de esa categoría
-    if (isCategorySelected) {
-      return product.categoryId === activeCategoryId;
-    }
-    // Si estamos en 'TODOS', la grilla oculta los que ya están en el carousel
-    return !product.isPopular;
-  });
+  const filteredProducts = isCategorySelected
+    ? products.filter((product) => product.categoryId === activeCategoryId)
+    : products;
 
   if (!hydrated) return null;
 
@@ -54,17 +45,8 @@ export const MenuGrid = () => {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-full">
-      {/* ─── SECTION 1: Featured / Más Vendidos Carousel ─── */}
-      {!isCategorySelected && featuredProducts.length > 0 && (
-        <>
-          <FeaturedCarousel products={featuredProducts} />
-          {/* ─── Breathing Room ─── */}
-          <div className="h-8" />
-        </>
-      )}
-
-      {/* ─── SECTION 2: Category Navigation ─── */}
+    <div className="flex flex-col w-full max-w-full mt-6">
+      {/* ─── SECTION 1: Category Navigation ─── */}
       <CategoryTabs
         categories={categories}
         activeCategoryId={activeCategoryId}
@@ -82,7 +64,7 @@ export const MenuGrid = () => {
         <div className="flex-1 h-px bg-slate-200/50 dark:bg-white/6" />
       </div>
 
-      {/* ─── SECTION 3: Product Grid ─── */}
+      {/* ─── SECTION 2: Product Grid ─── */}
       <motion.div
         variants={containerVariants}
         initial="hidden"

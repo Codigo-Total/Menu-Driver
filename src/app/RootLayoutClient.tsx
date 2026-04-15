@@ -18,28 +18,22 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   }, [lang]);
 
   const isHomePage = pathname === "/";
-  const isAdminRoute =
-    pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
+  const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
+
+  const showNav = !isHomePage && !isAdminRoute;
 
   return (
     <div
       className={cn(
         "relative flex flex-col min-h-screen",
-        !isHomePage && !isAdminRoute && "pb-24", // Only add padding if BottomNav is visible
+        showNav && "pb-20", // Padding for BottomNav on all sizes
       )}
     >
-      {!isHomePage && !isAdminRoute && <Header />}
+      {showNav && <Header />}
 
-      <main
-        className={cn(
-          "flex-1",
-          !isHomePage && !isAdminRoute && "container mx-auto px-4 sm:px-6",
-        )}
-      >
-        {children}
-      </main>
+      <main className={cn("flex-1", showNav && "container mx-auto px-4 sm:px-6")}>{children}</main>
 
-      {!isHomePage && !isAdminRoute && <BottomNav />}
+      {showNav && <BottomNav />}
       <CartDrawer />
       <ToastProvider />
       <FlyToCartProvider />

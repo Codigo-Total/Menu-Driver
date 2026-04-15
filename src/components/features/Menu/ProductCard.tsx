@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { formatPriceARS } from "@/lib/formatters";
 
 import { Product } from "@/types/menu.types";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { useCartStore } from "@/store/cart/cart.slice";
-import { useToastStore } from "@/store/ui/toast.slice";
 import { useFlyToCartStore } from "@/store/ui/flyToCart.slice";
-import { Plus, Star } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 interface ProductCardProps {
@@ -22,12 +21,9 @@ interface ProductCardProps {
  */
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { lang, hydrated } = useLangStore();
-  const cartItems = useCartStore((state) => state.items);
   const addItem = useCartStore((state) => state.addItem);
 
-  const quantity = cartItems.find((p) => p.id === product.id)?.quantity || 0;
   const addFlyItem = useFlyToCartStore((state) => state.addFlyItem);
-  const router = useRouter();
   const [isLoaded, setIsLoaded] = useState(false);
 
   if (!hydrated) return null;
@@ -36,8 +32,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <div
-      onClick={() => router.push(`/product/${product.id}`)}
-      className="group relative flex flex-row rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer h-[170px]
+      className="group relative flex flex-row rounded-2xl overflow-hidden transition-all duration-500 h-[170px]
         bg-white dark:bg-slate-900/60 backdrop-blur-xl
         border border-slate-100 dark:border-white/4
         shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)]
@@ -65,30 +60,18 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Quantity Badge */}
-        {quantity > 0 && (
-          <div className="absolute top-3 right-3 flex items-center justify-center min-w-[28px] h-7 bg-slate-900 border border-white/20 text-white text-xs font-black rounded-full shadow-xl animate-in zoom-in duration-300">
-            {quantity}
-          </div>
-        )}
-
         {/* Right-edge gradient blend */}
         <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/60" />
-
-        {/* Popular Badge */}
-        {product.isPopular && (
-          <div className="absolute top-3 left-3 flex items-center gap-1 bg-brand-yellow-500/90 backdrop-blur-sm text-brand-yellow-950 text-[10px] uppercase font-black px-2.5 py-1.5 rounded-lg tracking-wider shadow-lg shadow-brand-yellow-500/30">
-            <Star className="h-3 w-3 fill-current" />
-            Popular
-          </div>
-        )}
       </div>
 
       {/* Content — scaled for tablet reading distance */}
       <div className="flex flex-col justify-between flex-1 p-5 min-w-0">
-        {/* Top: Name + Description */}
-        <div className="min-w-0 space-y-1">
-          <h3 className="text-lg font-display font-extrabold text-slate-900 dark:text-white/95 leading-[1.15] tracking-tight line-clamp-2">
+        {/* Top: Name */}
+        <div className="min-w-0">
+          <h3
+            className="text-xl sm:text-[22px] font-display font-black text-slate-900 dark:text-white/95 leading-tight tracking-tight line-clamp-2"
+            title={name}
+          >
             {name}
           </h3>
         </div>
@@ -96,11 +79,11 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         {/* Bottom: Price + CTA */}
         <div className="flex items-end justify-between mt-auto">
           <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-white/20 mb-0.5">
-              Price (USD)
+            <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">
+              {lang === "es" ? "Precio" : "Price"}
             </span>
             <span className="text-2xl font-display font-black text-slate-900 dark:text-white tracking-tight leading-none">
-              ${product.price.toFixed(2)}
+              ${formatPriceARS(product.price)}
             </span>
           </div>
 

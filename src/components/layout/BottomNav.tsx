@@ -34,7 +34,7 @@ const NavItem = ({ id, href, onClick, icon: Icon, label, isActive, badge }: NavI
 
         {/* Badge over icon */}
         {badge !== undefined && badge > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white ring-2 ring-white dark:ring-slate-950 shadow-lg animate-bounce px-1">
+          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 text-[14px] font-black text-white ring-2 ring-white dark:ring-slate-950 shadow-lg animate-bounce px-1">
             {badge}
           </span>
         )}

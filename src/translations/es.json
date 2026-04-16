@@ -36,7 +36,11 @@
     "grid": "Tablero",
     "reset": "Reiniciar",
     "back_to_menu": "Ver Menú",
-    "switch_game": "Otro Juego"
+    "switch_game": "Otro Juego",
+    "tictactoe": "Ta Te Ti",
+    "tictactoe_desc": "El clásico juego de 3 en línea",
+    "math_duel": "Duelo a Matemáticas",
+    "math_duel_desc": "Compite resolviendo cuentas rápido"
   },
   "checkout": {
     "title": "Finalizar Pago",
@@ -53,7 +57,11 @@
     "transfer_desc": "CBU / Alias del chofer",
     "cash": "Efectivo",
     "cash_desc": "Paga en mano al recibir",
-    "secure": "Transacción Protegida"
+    "secure": "Transacción Protegida",
+    "select_method": "Seleccioná un método de pago",
+    "back_to_menu": "Volver al menú",
+    "qr_desc": "Escaneá con tu celular",
+    "empty_bag": "Tu bolsa está vacía"
   },
   "auth": {
     "login": "Ingresar",

@@ -36,7 +36,11 @@
     "grid": "Grid",
     "reset": "Reset",
     "back_to_menu": "View Menu",
-    "switch_game": "Switch Game"
+    "switch_game": "Switch Game",
+    "tictactoe": "Tic Tac Toe",
+    "tictactoe_desc": "The classic 3-in-a-row game",
+    "math_duel": "Math Duel",
+    "math_duel_desc": "Compete solving fast math problems"
   },
   "checkout": {
     "title": "Finalize Payment",
@@ -53,7 +57,11 @@
     "transfer_desc": "Driver CBU / Alias",
     "cash": "Cash",
     "cash_desc": "Pay in hand on delivery",
-    "secure": "Secure Transaction"
+    "secure": "Secure Transaction",
+    "select_method": "Select a payment method",
+    "back_to_menu": "Back to menu",
+    "qr_desc": "Scan with your phone",
+    "empty_bag": "Your bag is empty"
   },
   "auth": {
     "login": "Login",

@@ -27,7 +27,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "Beef, cheese, lettuce, tomato",
       es: "Carne, queso fresco, lechuga y tomate",
     },
-    price: 8500.0,
+    price: 8500000.0,
     image:
       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=600",
     stock: 20,

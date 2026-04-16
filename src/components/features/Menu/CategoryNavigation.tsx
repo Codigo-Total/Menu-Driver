@@ -38,8 +38,8 @@ export const CategoryTabs = ({
               : "bg-slate-100 dark:bg-white/4 border border-slate-200 dark:border-white/6 text-slate-500 dark:text-white/40 hover:bg-slate-200 dark:hover:bg-white/8 hover:text-slate-700 dark:hover:text-white/60 font-semibold",
           )}
         >
-          <Icons.LayoutGrid className="h-[18px] w-[18px]" />
-          <span className="text-xs uppercase tracking-[0.12em]">{t("menu.all")}</span>
+          <Icons.LayoutGrid className="h-[20px] w-[20px]" />
+          <span className="text-[14px] uppercase tracking-[0.12em]">{t("menu.all")}</span>
         </button>
 
         {/* Subtle separator */}

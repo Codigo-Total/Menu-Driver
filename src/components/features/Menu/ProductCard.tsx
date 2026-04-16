@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { formatPriceARS } from "@/lib/formatters";
 
 import { Product } from "@/types/menu.types";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { useCartStore } from "@/store/cart/cart.slice";
 import { useFlyToCartStore } from "@/store/ui/flyToCart.slice";
-import { Plus } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 interface ProductCardProps {
@@ -17,7 +17,7 @@ interface ProductCardProps {
 /**
  * Premium Horizontal Product Card — Tablet Optimized.
  * Typography scaled for arm's-length reading (60-80cm).
- * Glassmorphism + depth. Touch targets ≥ 48px.
+ * Touch targets ≥ 56px (automotive standard).
  */
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { lang, hydrated } = useLangStore();
@@ -25,6 +25,32 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   const addFlyItem = useFlyToCartStore((state) => state.addFlyItem);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+
+  const handleAddToCart = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+
+      const cardElement = e.currentTarget.closest(".group");
+      const imgElement = cardElement?.querySelector("img");
+      if (imgElement) {
+        const rect = imgElement.getBoundingClientRect();
+        addFlyItem({
+          image: product.image,
+          startX: rect.left,
+          startY: rect.top,
+          startWidth: rect.width,
+        });
+      }
+
+      addItem(product);
+
+      // Micro-feedback: show checkmark for 800ms
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 800);
+    },
+    [addItem, addFlyItem, product],
+  );
 
   if (!hydrated) return null;
 
@@ -32,14 +58,17 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <div
-      className="group relative flex flex-row rounded-2xl overflow-hidden transition-all duration-500 h-[170px]
-        bg-white dark:bg-slate-900/60 backdrop-blur-xl
-        border border-slate-100 dark:border-white/4
-        shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)]
-        hover:bg-slate-50 dark:hover:bg-white/4
-        hover:border-slate-200 dark:hover:border-white/8
-        hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgb(0,0,0,0.5)]
-        active:scale-[0.985] active:shadow-none dark:active:shadow-none"
+      role="article"
+      aria-label={`${name} — $${formatPriceARS(product.price)}`}
+      className={cn(
+        "group relative flex flex-row rounded-2xl overflow-hidden h-[170px]",
+        "bg-white dark:bg-slate-900/60 backdrop-blur-xl",
+        "border border-slate-100 dark:border-white/4",
+        "shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)]",
+        "transition-all duration-200 ease-out",
+        "active:scale-[0.985] active:shadow-none dark:active:shadow-none",
+        justAdded && "ring-2 ring-emerald-500/50 dark:ring-emerald-400/40",
+      )}
     >
       {/* Image — fixed width, fills card height */}
       <div className="relative w-[170px] min-w-[170px] h-full overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -48,7 +77,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           alt={name}
           onLoad={() => setIsLoaded(true)}
           className={cn(
-            "object-cover w-full h-full transform transition-all duration-700 group-hover:scale-110",
+            "object-cover w-full h-full transform transition-all duration-700",
+            "group-active:scale-105",
             !isLoaded ? "opacity-0 scale-105" : "opacity-100 scale-100",
           )}
         />
@@ -61,7 +91,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         )}
 
         {/* Right-edge gradient blend */}
-        <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent to-white/40 dark:to-slate-950/60" />
+        <div className="absolute inset-0 bg-linear-to-r from-transparent via-transparent via-60% to-white/40 dark:to-slate-950/60" />
       </div>
 
       {/* Content — scaled for tablet reading distance */}
@@ -78,42 +108,26 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Bottom: Price + CTA */}
         <div className="flex items-end justify-between mt-auto">
-          <div className="flex flex-col">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5">
-              {lang === "es" ? "Precio" : "Price"}
-            </span>
-            <span className="text-2xl font-display font-black text-slate-900 dark:text-white tracking-tight leading-none">
-              ${formatPriceARS(product.price)}
-            </span>
-          </div>
+          <span className="text-[28px] font-display font-black text-slate-900 dark:text-white tracking-tight leading-none">
+            ${formatPriceARS(product.price)}
+          </span>
 
           <button
-            className="flex items-center justify-center h-12 w-12 rounded-xl transition-all duration-300
-              bg-brand-yellow-500 text-brand-yellow-950
-              shadow-lg shadow-brand-yellow-500/25
-              hover:shadow-xl hover:shadow-brand-yellow-500/40
-              hover:bg-brand-yellow-400
-              active:scale-90 active:shadow-none"
-            onClick={(e) => {
-              e.stopPropagation();
-
-              const cardElement = e.currentTarget.closest(".group");
-              const imgElement = cardElement?.querySelector("img");
-              if (imgElement) {
-                const rect = imgElement.getBoundingClientRect();
-                addFlyItem({
-                  image: product.image,
-                  startX: rect.left,
-                  startY: rect.top,
-                  startWidth: rect.width,
-                });
-              }
-
-              addItem(product);
-            }}
+            className={cn(
+              "flex items-center justify-center h-14 w-14 rounded-xl transition-all duration-200",
+              "shadow-lg active:scale-90 active:shadow-none",
+              justAdded
+                ? "bg-emerald-500 text-white shadow-emerald-500/25"
+                : "bg-brand-yellow-500 text-brand-yellow-950 shadow-brand-yellow-500/25",
+            )}
+            onClick={handleAddToCart}
             aria-label={lang === "es" ? "Agregar al carrito" : "Add to cart"}
           >
-            <Plus className="h-5 w-5 stroke-[2.5]" />
+            {justAdded ? (
+              <Check className="h-6 w-6 stroke-[2.5] animate-in zoom-in duration-200" />
+            ) : (
+              <Plus className="h-6 w-6 stroke-[2.5]" />
+            )}
           </button>
         </div>
       </div>

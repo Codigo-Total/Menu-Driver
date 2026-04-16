@@ -31,7 +31,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
     >
       {showNav && <Header />}
 
-      <main className={cn("flex-1", showNav && "container mx-auto px-4 sm:px-6")}>{children}</main>
+      <main className={cn("flex-1", showNav && "w-full px-6 sm:px-8 lg:px-12")}>{children}</main>
 
       {showNav && <BottomNav />}
       <CartDrawer />

@@ -34,7 +34,7 @@ export const MenuGrid = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.08,
       },
     },
   };
@@ -54,7 +54,7 @@ export const MenuGrid = () => {
       />
 
       {/* ─── Section Label ─── */}
-      <div className="flex items-center gap-3 px-2 mt-6 mb-4">
+      <div className="flex items-center gap-3 mt-6 mb-4">
         <div className="flex items-center gap-2 text-slate-400 dark:text-white/30">
           <UtensilsCrossed className="h-4 w-4" />
           <span className="text-xs font-bold uppercase tracking-[0.15em]">
@@ -69,7 +69,7 @@ export const MenuGrid = () => {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 gap-4 px-2 pb-6"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6"
       >
         {filteredProducts.map((product) => (
           <motion.div key={product.id} variants={itemVariants}>
@@ -80,7 +80,7 @@ export const MenuGrid = () => {
 
       {/* Empty State */}
       {filteredProducts.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 mx-2 rounded-2xl bg-slate-50/50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/[0.06]">
+        <div className="flex flex-col items-center justify-center py-20 rounded-2xl bg-slate-50/50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/[0.06]">
           <SearchX className="h-10 w-10 text-slate-300 dark:text-white/10 mb-4" />
           <h3 className="text-sm font-semibold text-slate-400 dark:text-white/30 uppercase tracking-widest text-center px-4">
             {lang === "es" ? "No hay productos en esta categoría" : "No products in this category"}

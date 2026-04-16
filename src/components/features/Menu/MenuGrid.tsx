@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { ProductCard } from "./ProductCard";
 import { CategoryTabs } from "./CategoryNavigation";
-import { FeaturedCarousel } from "./FeaturedCarousel";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { useProductStore } from "@/store/product/product.slice";
 import { useCategoryStore } from "@/store/category/category.slice";
@@ -24,17 +23,9 @@ export const MenuGrid = () => {
 
   const isCategorySelected = activeCategoryId !== null;
 
-  // El carousel SOLO se muestra en la vista 'TODOS' (sin categoría)
-  const featuredProducts = products.filter((p) => p.isPopular);
-
-  const filteredProducts = products.filter((product) => {
-    // Si hay una categoría seleccionada, la grilla muestra TODOS los productos de esa categoría
-    if (isCategorySelected) {
-      return product.categoryId === activeCategoryId;
-    }
-    // Si estamos en 'TODOS', la grilla oculta los que ya están en el carousel
-    return !product.isPopular;
-  });
+  const filteredProducts = isCategorySelected
+    ? products.filter((product) => product.categoryId === activeCategoryId)
+    : products;
 
   if (!hydrated) return null;
 
@@ -43,7 +34,7 @@ export const MenuGrid = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.08,
       },
     },
   };
@@ -54,17 +45,8 @@ export const MenuGrid = () => {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-full">
-      {/* ─── SECTION 1: Featured / Más Vendidos Carousel ─── */}
-      {!isCategorySelected && featuredProducts.length > 0 && (
-        <>
-          <FeaturedCarousel products={featuredProducts} />
-          {/* ─── Breathing Room ─── */}
-          <div className="h-8" />
-        </>
-      )}
-
-      {/* ─── SECTION 2: Category Navigation ─── */}
+    <div className="flex flex-col w-full max-w-full mt-6">
+      {/* ─── SECTION 1: Category Navigation ─── */}
       <CategoryTabs
         categories={categories}
         activeCategoryId={activeCategoryId}
@@ -72,7 +54,7 @@ export const MenuGrid = () => {
       />
 
       {/* ─── Section Label ─── */}
-      <div className="flex items-center gap-3 px-2 mt-6 mb-4">
+      <div className="flex items-center gap-3 mt-6 mb-4">
         <div className="flex items-center gap-2 text-slate-400 dark:text-white/30">
           <UtensilsCrossed className="h-4 w-4" />
           <span className="text-xs font-bold uppercase tracking-[0.15em]">
@@ -82,12 +64,12 @@ export const MenuGrid = () => {
         <div className="flex-1 h-px bg-slate-200/50 dark:bg-white/6" />
       </div>
 
-      {/* ─── SECTION 3: Product Grid ─── */}
+      {/* ─── SECTION 2: Product Grid ─── */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 gap-4 px-2 pb-6"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6"
       >
         {filteredProducts.map((product) => (
           <motion.div key={product.id} variants={itemVariants}>
@@ -98,7 +80,7 @@ export const MenuGrid = () => {
 
       {/* Empty State */}
       {filteredProducts.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 mx-2 rounded-2xl bg-slate-50/50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/[0.06]">
+        <div className="flex flex-col items-center justify-center py-20 rounded-2xl bg-slate-50/50 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/[0.06]">
           <SearchX className="h-10 w-10 text-slate-300 dark:text-white/10 mb-4" />
           <h3 className="text-sm font-semibold text-slate-400 dark:text-white/30 uppercase tracking-widest text-center px-4">
             {lang === "es" ? "No hay productos en esta categoría" : "No products in this category"}

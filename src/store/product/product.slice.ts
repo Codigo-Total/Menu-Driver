@@ -27,7 +27,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "Beef, cheese, lettuce, tomato",
       es: "Carne, queso fresco, lechuga y tomate",
     },
-    price: 12.0,
+    price: 8500000.0,
     image:
       "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=600",
     stock: 20,
@@ -41,7 +41,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "Golden and crispy with sea salt",
       es: "Doradas y crujientes al estilo casero",
     },
-    price: 5.5,
+    price: 3500.0,
     image:
       "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&q=80&w=600",
     stock: 100,
@@ -51,7 +51,7 @@ const MOCK_PRODUCTS: Product[] = [
     categoryId: "1",
     name: { en: "Chicken Nuggets", es: "Nuggets de Pollo" },
     description: { en: "Crispy chicken breast bites", es: "Bocados de pechuga crujiente" },
-    price: 7.0,
+    price: 4500.0,
     image:
       "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=600",
     stock: 30,
@@ -64,7 +64,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "Grilled sausage, bacon, and cheddar",
       es: "Salchicha asada, bacon y cheddar",
     },
-    price: 8.5,
+    price: 5500.0,
     image:
       "https://images.unsplash.com/photo-1596662951482-0c4ba74a6df6?auto=format&fit=crop&q=80&w=600",
     stock: 40,
@@ -77,7 +77,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "Tortilla chips with melted cheese",
       es: "Totopos de maíz con queso fundido",
     },
-    price: 9.0,
+    price: 4800.0,
     image:
       "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?auto=format&fit=crop&q=80&w=600",
     stock: 25,
@@ -89,7 +89,7 @@ const MOCK_PRODUCTS: Product[] = [
     categoryId: "2",
     name: { en: "Coca Cola", es: "Coca Cola" },
     description: { en: "Refreshing cold beverage", es: "Bebida fría y refrescante" },
-    price: 3.5,
+    price: 2000.0,
     image:
       "https://images.pexels.com/photos/50593/coca-cola-cold-drink-soft-drink-coke-50593.jpeg?auto=compress&cs=tinysrgb&w=600",
     stock: 50,
@@ -100,7 +100,7 @@ const MOCK_PRODUCTS: Product[] = [
     categoryId: "2",
     name: { en: "Craft Beer", es: "Cerveza Artesanal" },
     description: { en: "Premium locally brewed IPA", es: "IPA premium de barril" },
-    price: 6.5,
+    price: 3500.0,
     image:
       "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?auto=format&fit=crop&q=80&w=600",
     stock: 60,
@@ -111,7 +111,7 @@ const MOCK_PRODUCTS: Product[] = [
     categoryId: "2",
     name: { en: "Fresh Orange Juice", es: "Jugo de Naranja" },
     description: { en: "Freshly squeezed natural juice", es: "Exprimido 100% natural al instante" },
-    price: 4.5,
+    price: 2500.0,
     image:
       "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?auto=format&fit=crop&q=80&w=600",
     stock: 40,
@@ -124,7 +124,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "Cold brew with a touch of milk",
       es: "Cold brew premium con un toque de leche",
     },
-    price: 5.0,
+    price: 2800.0,
     image:
       "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&q=80&w=600",
     stock: 35,
@@ -136,7 +136,7 @@ const MOCK_PRODUCTS: Product[] = [
     categoryId: "3",
     name: { en: "Vanilla Ice Cream", es: "Helado de Vainilla" },
     description: { en: "Classic creamy vanilla", es: "Vainilla cremosa artesanal" },
-    price: 4.0,
+    price: 2500.0,
     image:
       "https://images.unsplash.com/photo-1570197781417-0a8237580532?auto=format&fit=crop&q=80&w=600",
     stock: 20,
@@ -147,7 +147,7 @@ const MOCK_PRODUCTS: Product[] = [
     categoryId: "3",
     name: { en: "Chocolate Brownie", es: "Brownie de Chocolate" },
     description: { en: "Warm brownie with fudge", es: "Recién horneado, con chispas 70% cacao" },
-    price: 5.5,
+    price: 3200.0,
     image:
       "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&q=80&w=600",
     stock: 15,
@@ -160,7 +160,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "New York style with berry compote",
       es: "Estilo New York relleno de compota de frutos rojos",
     },
-    price: 6.5,
+    price: 4500.0,
     image:
       "https://images.unsplash.com/photo-1508737804141-4c3b688e2546?auto=format&fit=crop&q=80&w=600",
     stock: 12,
@@ -173,7 +173,7 @@ const MOCK_PRODUCTS: Product[] = [
       en: "Italian coffee-flavored dessert",
       es: "El clásico postre italiano al café",
     },
-    price: 7.0,
+    price: 5000.0,
     image:
       "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&q=80&w=600",
     stock: 10,

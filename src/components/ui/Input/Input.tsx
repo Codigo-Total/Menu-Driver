@@ -1,6 +1,6 @@
-import { forwardRef } from 'react';
-import { cn } from '@/lib/cn';
-import { InputProps } from './Input.types';
+import { forwardRef } from "react";
+import { cn } from "@/lib/cn";
+import { InputProps } from "./Input.types";
 
 /**
  * Premium Input component with labels, errors, and icons.
@@ -20,59 +20,47 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
-      <div className={cn('flex flex-col gap-1.5 w-full', containerClassName)}>
+      <div className={cn("flex flex-col gap-1.5 w-full", containerClassName)}>
         {label && (
           <label
             htmlFor={id}
-            className="text-sm font-semibold text-slate-700 ml-0.5"
+            className="pl-1 text-base font-semibold text-slate-500 dark:text-slate-400"
           >
             {label}
           </label>
         )}
-        
+
         <div className="relative flex items-center">
-          {leftIcon && (
-            <div className="absolute left-3 text-slate-400">
-              {leftIcon}
-            </div>
-          )}
-          
+          {leftIcon && <div className="absolute left-3 text-slate-400">{leftIcon}</div>}
+
           <input
             id={id}
             ref={ref}
             disabled={disabled}
             className={cn(
-              'flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500',
-              leftIcon && 'pl-10',
-              rightIcon && 'pr-10',
-              error && 'border-red-500 focus-visible:ring-red-400',
-              className
+              "flex h-11 w-full rounded-[8px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 focus:outline-none focus:border-brand-yellow-500 focus:ring-0 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500",
+              leftIcon && "pl-10",
+              rightIcon && "pr-10",
+              error && "border-red-500 focus:border-red-500",
+              className,
             )}
             {...props}
           />
-          
-          {rightIcon && (
-            <div className="absolute right-3 text-slate-400">
-              {rightIcon}
-            </div>
-          )}
+
+          {rightIcon && <div className="absolute right-3 text-slate-400">{rightIcon}</div>}
         </div>
-        
+
         {error ? (
-          <p className="text-xs font-medium text-red-500 mt-1 ml-0.5">
-            {error}
-          </p>
+          <p className="text-xs font-medium text-red-500 mt-1 ml-0.5">{error}</p>
         ) : hint ? (
-          <p className="text-xs text-slate-500 mt-1 ml-0.5">
-            {hint}
-          </p>
+          <p className="text-xs text-slate-500 mt-1 ml-0.5">{hint}</p>
         ) : null}
       </div>
     );
-  }
+  },
 );
 
-Input.displayName = 'Input';
+Input.displayName = "Input";

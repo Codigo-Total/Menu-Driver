@@ -8,6 +8,33 @@ import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { cn } from "@/lib/cn";
 
+const playTick = () => {
+  try {
+    // @ts-expect-error - webkitAudioContext is a non-standard property
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    // Very fast, subtle iOS-like "tick"
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.02);
+
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
+
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.02);
+  } catch (e) {
+    // Ignore audio context initialization errors
+  }
+};
+
 export default function AdminLoginPage() {
   const router = useRouter();
   const { loginWithPin, isLoading, isAdmin } = useAuthStore();
@@ -42,6 +69,7 @@ export default function AdminLoginPage() {
   );
 
   const handleKeyPress = (num: string) => {
+    playTick();
     if (pin.length < 4 && !isLoading) {
       const newPin = pin + num;
       setPin(newPin);
@@ -54,6 +82,7 @@ export default function AdminLoginPage() {
   };
 
   const handleDelete = () => {
+    playTick();
     if (pin.length > 0 && !isLoading) {
       setPin((prev) => prev.slice(0, -1));
       setError(false);

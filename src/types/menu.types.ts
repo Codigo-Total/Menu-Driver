@@ -8,10 +8,10 @@ export interface Product {
   id: string;
   categoryId: string;
   name: Record<string, string>;
-  description: Record<string, string>;
+  description?: Record<string, string>;
   price: number;
   image: string;
-  stock: number;
+  stock?: number;
   isPopular?: boolean;
 }
 

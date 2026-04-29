@@ -8,19 +8,28 @@ import { FlyToCartProvider } from "@/components/ui/FlyToCart";
 import { cn } from "@/lib/cn";
 import { useLangStore } from "@/store/lang/lang.slice";
 import { useEffect } from "react";
+import { InactivityHandler } from "@/components/layout/InactivityHandler";
 
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   const { lang } = useLangStore();
   const pathname = usePathname();
 
+  const isHomePage = pathname === "/";
+  const isSetupPage = pathname.startsWith("/setup");
+  const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
+
+  const showNav = !isHomePage && !isAdminRoute && !isSetupPage;
+
+  useEffect(() => {
+    const isSetupComplete = localStorage.getItem("kiosk_setup_complete") === "true";
+    if (!isSetupComplete && pathname !== "/setup") {
+      window.location.href = "/setup"; // Use window.location for a hard reset/redir if needed, or router
+    }
+  }, [pathname]);
+
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
-
-  const isHomePage = pathname === "/";
-  const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/dashboard");
-
-  const showNav = !isHomePage && !isAdminRoute;
 
   return (
     <div
@@ -37,6 +46,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
       <CartDrawer />
       <ToastProvider />
       <FlyToCartProvider />
+      <InactivityHandler />
     </div>
   );
 }

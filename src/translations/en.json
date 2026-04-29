@@ -133,5 +133,44 @@
     "manual_mode": "MANUAL EDIT",
     "auto_translate": "AUTO SYNC",
     "save_changes": "Save Changes"
+  },
+  "setup": {
+    "welcome": {
+      "title": "Welcome to Menu Driver",
+      "subtitle": "Let's set up your device in a few simple steps.",
+      "start": "Start Configuration"
+    },
+    "auth": {
+      "title": "Connect Account",
+      "subtitle": "Scan the QR code with your phone to link your Google or Apple account.",
+      "waiting": "Waiting for connection...",
+      "success": "Account linked successfully!"
+    },
+    "payments": {
+      "title": "Setup Payments",
+      "subtitle": "Link your MercadoPago account to start receiving payments.",
+      "connect": "Connect MercadoPago",
+      "connected": "MercadoPago connected"
+    },
+    "pin": {
+      "title": "Security PIN",
+      "subtitle": "Create a 4-digit PIN to protect access to device settings.",
+      "enter": "Enter your new PIN",
+      "confirm": "Confirm your PIN",
+      "mismatch": "PINs do not match. Try again.",
+      "save": "Save and Finish"
+    },
+    "success": {
+      "title": "Setup Complete!",
+      "subtitle": "Your Menu Driver terminal is now operational and ready to sell.",
+      "finish": "Go to Dashboard"
+    },
+    "steps": {
+      "welcome": "Welcome",
+      "auth": "Account",
+      "payments": "Payments",
+      "pin": "Security",
+      "finish": "Ready"
+    }
   }
 }

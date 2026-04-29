@@ -56,9 +56,9 @@ export default function StepMercadoPago({ onNext }: StepProps) {
           <button
             onClick={handleConnect}
             disabled={isConnected || isConnecting}
-            className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-bold transition-all ${
-              isConnected 
-                ? "bg-green-500/10 text-green-500 border border-green-500/20" 
+            className={`w-full flex items-center justify-center gap-3 py-5 text-lg rounded-2xl font-bold transition-all min-h-[60px] ${
+              isConnected
+                ? "bg-green-500/10 text-green-500 border border-green-500/20"
                 : "bg-[#009EE3] hover:bg-[#0089C7] text-white shadow-xl shadow-blue-500/10 active:scale-95"
             }`}
           >
@@ -81,7 +81,7 @@ export default function StepMercadoPago({ onNext }: StepProps) {
 
       <button 
         onClick={onNext}
-        className="mt-12 text-sm text-slate-400 dark:text-white/30 hover:text-slate-600 dark:hover:text-white/60 font-medium transition-colors"
+        className="mt-12 text-base px-8 py-4 rounded-full text-slate-400 dark:text-white/30 hover:text-slate-600 dark:hover:text-white/60 font-medium transition-colors min-h-[52px]"
       >
         Omitir por ahora
       </button>

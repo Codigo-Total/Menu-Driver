@@ -104,28 +104,46 @@ export default function DashboardPage() {
       {/* Row 1: Tabs + Compact Controls */}
       <div className="flex items-center justify-between gap-4 pt-4">
         {/* Tabs — clean, no container box */}
-        <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
+        <div className="relative flex items-center gap-1 bg-white dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
           <button
             onClick={() => setActiveTab("products")}
             className={cn(
-              "px-5 py-2.5 rounded-xl font-bold text-[13px] transition-all flex items-center gap-2.5 whitespace-nowrap",
+              "relative z-10 px-5 py-2.5 rounded-xl font-bold text-[13px] transition-colors duration-300 flex items-center gap-2.5 whitespace-nowrap",
               activeTab === "products"
-                ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-md shadow-brand-yellow-500/20"
+                ? "text-brand-yellow-950"
                 : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200",
             )}
           >
-            <ShoppingBag className="h-4 w-4" /> {t("admin.products_uppercase")}
+            {activeTab === "products" && (
+              <motion.div
+                layoutId="tab-slider"
+                className="absolute inset-0 bg-brand-yellow-500 rounded-xl shadow-md shadow-brand-yellow-500/20"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-2.5">
+              <ShoppingBag className="h-4 w-4" /> {t("admin.products_uppercase")}
+            </span>
           </button>
           <button
             onClick={() => setActiveTab("categories")}
             className={cn(
-              "px-5 py-2.5 rounded-xl font-bold text-[13px] transition-all flex items-center gap-2.5 whitespace-nowrap",
+              "relative z-10 px-5 py-2.5 rounded-xl font-bold text-[13px] transition-colors duration-300 flex items-center gap-2.5 whitespace-nowrap",
               activeTab === "categories"
-                ? "bg-brand-yellow-500 text-brand-yellow-950 shadow-md shadow-brand-yellow-500/20"
+                ? "text-brand-yellow-950"
                 : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200",
             )}
           >
-            <Layers className="h-4 w-4" /> {t("admin.categories_uppercase")}
+            {activeTab === "categories" && (
+              <motion.div
+                layoutId="tab-slider"
+                className="absolute inset-0 bg-brand-yellow-500 rounded-xl shadow-md shadow-brand-yellow-500/20"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-2.5">
+              <Layers className="h-4 w-4" /> {t("admin.categories_uppercase")}
+            </span>
           </button>
         </div>
 

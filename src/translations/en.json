@@ -142,7 +142,10 @@
     },
     "auth": {
       "title": "Connect Account",
-      "subtitle": "Scan the QR code with your phone to link your Google or Apple account.",
+      "subtitle": "Choose which account you want to link your device with.",
+      "google": "Continue with Google",
+      "apple": "Continue with Apple",
+      "change": "Change",
       "waiting": "Waiting for connection...",
       "success": "Account linked successfully!"
     },

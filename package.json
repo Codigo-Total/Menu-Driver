@@ -17,10 +17,12 @@
     "lucide-react": "latest",
     "next": "latest",
     "next-themes": "latest",
+    "qrcode.react": "^4.2.0",
     "react": "rc",
     "react-confetti": "latest",
     "react-dom": "rc",
     "react-use": "^17.6.0",
+    "socket.io-client": "^4.8.3",
     "tailwind-merge": "latest",
     "zustand": "latest"
   },

@@ -133,5 +133,44 @@
     "manual_mode": "EDICIÓN MANUAL",
     "auto_translate": "TRADUCCIÓN AUTO",
     "save_changes": "Guardar Cambios"
+  },
+  "setup": {
+    "welcome": {
+      "title": "Bienvenido a Menu Driver",
+      "subtitle": "Vamos a configurar tu dispositivo en unos simples pasos.",
+      "start": "Comenzar Configuración"
+    },
+    "auth": {
+      "title": "Conectar Cuenta",
+      "subtitle": "Escaneá el código QR con tu teléfono para vincular tu cuenta de Google o Apple.",
+      "waiting": "Esperando vinculación...",
+      "success": "¡Cuenta vinculada correctamente!"
+    },
+    "payments": {
+      "title": "Configurar Pagos",
+      "subtitle": "Vincula tu cuenta de MercadoPago para comenzar a recibir cobros.",
+      "connect": "Conectar MercadoPago",
+      "connected": "MercadoPago conectado"
+    },
+    "pin": {
+      "title": "PIN de Seguridad",
+      "subtitle": "Crea un PIN de 4 dígitos para proteger el acceso a la configuración del dispositivo.",
+      "enter": "Ingresa tu nuevo PIN",
+      "confirm": "Confirma tu PIN",
+      "mismatch": "Los PIN no coinciden. Intenta de nuevo.",
+      "save": "Guardar y Finalizar"
+    },
+    "success": {
+      "title": "¡Configuración Lista!",
+      "subtitle": "Tu kiosco móvil ya está operativo y listo para vender.",
+      "finish": "Ir al Dashboard"
+    },
+    "steps": {
+      "welcome": "Bienvenida",
+      "auth": "Cuenta",
+      "payments": "Pagos",
+      "pin": "Seguridad",
+      "finish": "Listo"
+    }
   }
 }

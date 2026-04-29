@@ -1,11 +1,12 @@
 "use client";
 
 import { useLangStore } from "@/store/lang/lang.slice";
-import { Coffee, Droplets, Popcorn, Globe, Gamepad2 } from "lucide-react";
+import { Coffee, Droplets, Popcorn, Gamepad2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { SettingsControls } from "@/components/ui/SettingsControls/SettingsControls";
 
 const CAROUSEL_IMAGES = [
   "/images/screensaver/hero-1-v2.png",
@@ -24,7 +25,7 @@ const CATEGORY_ICONS = [
 ];
 
 export default function WelcomePage() {
-  const { lang, setLanguage, t, hydrated } = useLangStore();
+  const { t, hydrated } = useLangStore();
   const router = useRouter();
   const [isNavigating, setIsNavigating] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -49,9 +50,8 @@ export default function WelcomePage() {
     }, 600);
   };
 
-  const handleLangChange = (e: React.MouseEvent, newLang: "es" | "en") => {
+  const handleStopPropagation = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setLanguage(newLang);
   };
 
   return (
@@ -108,33 +108,11 @@ export default function WelcomePage() {
               transition={{ duration: 1, delay: 0.5 }}
               className="flex items-center"
             >
-              {/* Language Selector Pill */}
-              <div className="flex items-center gap-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 p-1">
-                <div className="pl-2 pr-1">
-                  <Globe className="w-3.5 h-3.5 text-white/40" />
-                </div>
-                <button
-                  onClick={(e) => handleLangChange(e, "es")}
-                  className={`px-4 py-2 rounded-full text-[11px] font-bold tracking-wider uppercase transition-all duration-300 ${
-                    lang === "es"
-                      ? "bg-white text-black shadow-lg"
-                      : "text-white/50 hover:text-white/80"
-                  }`}
-                >
-                  ES
-                </button>
-                <div className="w-px h-3.5 bg-white/10" />
-                <button
-                  onClick={(e) => handleLangChange(e, "en")}
-                  className={`px-4 py-2 rounded-full text-[11px] font-bold tracking-wider uppercase transition-all duration-300 ${
-                    lang === "en"
-                      ? "bg-white text-black shadow-lg"
-                      : "text-white/50 hover:text-white/80"
-                  }`}
-                >
-                  EN
-                </button>
-              </div>
+              <SettingsControls
+                variant="glass"
+                showThemeToggle={false}
+                onInteraction={handleStopPropagation}
+              />
             </motion.div>
           </div>
 

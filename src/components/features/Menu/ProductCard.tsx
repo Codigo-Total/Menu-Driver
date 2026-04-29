@@ -99,7 +99,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         {/* Top: Name */}
         <div className="min-w-0">
           <h3
-            className="text-xl sm:text-[22px] font-display font-black text-slate-900 dark:text-white/95 leading-tight tracking-tight line-clamp-2"
+            className="text-xl sm:text-[24px] font-display font-black text-slate-900/70 dark:text-white/70 leading-tight tracking-tight line-clamp-2"
             title={name}
           >
             {name}
@@ -108,7 +108,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Bottom: Price + CTA */}
         <div className="flex items-end justify-between mt-auto">
-          <span className="text-[28px] font-display font-black text-slate-900 dark:text-white tracking-tight leading-none">
+          <span className="text-[32px] font-display font-black text-slate-900 dark:text-white tracking-tight leading-none">
             ${formatPriceARS(product.price)}
           </span>
 

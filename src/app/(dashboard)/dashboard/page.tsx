@@ -355,48 +355,68 @@ export default function DashboardPage() {
           ) : (
             <>
               {filteredCategories.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredCategories.map((category) => {
                     const IconComponent =
                       (LucideIcons as unknown as Record<string, LucideIcons.LucideIcon>)[
                         category.icon
                       ] || LucideIcons.Layers;
+                    const productCount = products.filter(
+                      (p) => p.categoryId === category.id,
+                    ).length;
+                    const otherLang = lang === "es" ? "en" : "es";
+                    const secondaryName = category.name[otherLang];
 
                     return (
                       <motion.div
                         layout
                         key={category.id}
-                        className="bg-white dark:bg-slate-900 p-8 rounded-4xl border border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-none transition-all group relative overflow-hidden"
+                        className="bg-white dark:bg-slate-900 p-7 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-lg shadow-slate-200/30 dark:shadow-none hover:border-brand-yellow-500/30 dark:hover:border-brand-yellow-500/20 transition-all duration-300 group relative overflow-hidden"
                       >
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500 group-hover:bg-brand-yellow-50 dark:group-hover:bg-brand-yellow-500/10 group-hover:text-brand-yellow-500 transition-all">
-                            <IconComponent className="h-6 w-6" />
+                        {/* Row 1: Icon + Actions */}
+                        <div className="flex items-start justify-between mb-7">
+                          <div className="p-4 rounded-2xl bg-brand-yellow-50 dark:bg-brand-yellow-500/10 text-brand-yellow-600 dark:text-brand-yellow-400 ring-1 ring-brand-yellow-500/20 group-hover:scale-105 transition-transform duration-300">
+                            <IconComponent className="h-7 w-7" strokeWidth={2} />
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <button
                               onClick={() => openEditModal(category)}
-                              className="h-9 w-9 flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:text-blue-700 dark:hover:text-blue-300 transition-all active:scale-95 group"
+                              className="h-11 w-11 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 ring-1 ring-slate-200/80 dark:ring-slate-700/50 hover:bg-blue-50 dark:hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 hover:ring-blue-500/30 transition-all active:scale-95"
                               title={t("admin.edit_category") || "Editar"}
                             >
-                              <Edit2 className="h-4 w-4 transition-transform group-hover:scale-110" />
+                              <Edit2 className="h-[18px] w-[18px]" />
                             </button>
                             <button
                               onClick={() => deleteCategory(category.id)}
-                              className="h-9 w-9 flex items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-500 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-500/20 hover:text-rose-600 dark:hover:text-rose-300 transition-all active:scale-95 group"
+                              className="h-11 w-11 flex items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 ring-1 ring-slate-200/80 dark:ring-slate-700/50 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-500 dark:hover:text-rose-400 hover:ring-rose-500/30 transition-all active:scale-95"
                               title={t("admin.delete_category") || "Eliminar"}
                             >
-                              <Trash2 className="h-4 w-4 transition-transform group-hover:scale-110" />
+                              <Trash2 className="h-[18px] w-[18px]" />
                             </button>
                           </div>
                         </div>
+
+                        {/* Row 2: Name + Secondary + Badge */}
                         <div>
-                          <h3 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
+                          <h3 className="text-xl font-black text-slate-900 dark:text-white leading-tight">
                             {category.name[lang] || category.name.es}
                           </h3>
-                          <p className="text-slate-400 dark:text-slate-500 font-bold mt-2 uppercase tracking-widest text-[10px]">
-                            {products.filter((p) => p.categoryId === category.id).length}{" "}
-                            {t("admin.products_uppercase")}
-                          </p>
+                          {secondaryName && (
+                            <p className="text-[13px] text-slate-400 dark:text-slate-500 mt-1 truncate">
+                              {secondaryName}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-2 mt-4">
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-slate-800 ring-1 ring-slate-100 dark:ring-slate-700/50">
+                              <Package className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+                              <span className="text-[12px] font-bold text-slate-500 dark:text-slate-400 tabular-nums">
+                                {productCount}{" "}
+                                {productCount === 1
+                                  ? lang === "en" ? "product" : "producto"
+                                  : lang === "en" ? "products" : "productos"}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </motion.div>
                     );

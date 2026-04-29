@@ -61,7 +61,7 @@ export default function StepSuccess({ onFinish }: StepProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.0 }}
         onClick={onFinish}
-        className="flex items-center gap-3 bg-slate-900 dark:bg-white text-white dark:text-black px-12 py-5 rounded-full font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-2xl"
+        className="flex items-center gap-3 bg-slate-900 dark:bg-white text-white dark:text-black px-14 py-6 text-lg rounded-full font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-2xl min-h-[64px]"
       >
         <Rocket className="w-5 h-5 text-brand-yellow-500" />
         {t("setup.success.finish")}

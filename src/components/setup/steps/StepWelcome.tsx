@@ -45,7 +45,7 @@ export default function StepWelcome({ onNext }: StepProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
         onClick={onNext}
-        className="flex items-center gap-3 bg-brand-yellow-500 hover:bg-brand-yellow-400 text-black px-12 py-5 rounded-full font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-brand-yellow-500/20 animate-pulse-glow"
+        className="flex items-center gap-3 bg-brand-yellow-500 hover:bg-brand-yellow-400 text-black px-14 py-6 text-lg rounded-full font-bold uppercase tracking-wider transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-brand-yellow-500/20 animate-pulse-glow min-h-[64px]"
       >
         {t("setup.welcome.start")}
         <ArrowRight className="w-5 h-5" />

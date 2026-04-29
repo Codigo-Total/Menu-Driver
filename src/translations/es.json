@@ -142,7 +142,10 @@
     },
     "auth": {
       "title": "Conectar Cuenta",
-      "subtitle": "Escaneá el código QR con tu teléfono para vincular tu cuenta de Google o Apple.",
+      "subtitle": "Elegí con qué cuenta querés vincular tu dispositivo.",
+      "google": "Continuar con Google",
+      "apple": "Continuar con Apple",
+      "change": "Cambiar",
       "waiting": "Esperando vinculación...",
       "success": "¡Cuenta vinculada correctamente!"
     },
@@ -163,7 +166,7 @@
     "success": {
       "title": "¡Configuración Lista!",
       "subtitle": "Tu kiosco móvil ya está operativo y listo para vender.",
-      "finish": "Ir al Dashboard"
+      "finish": "Ir al Panel"
     },
     "steps": {
       "welcome": "Bienvenida",

@@ -79,12 +79,12 @@ export function PinPad({
 
   return (
     <div className="flex flex-col items-center select-none">
-      <motion.div animate={controls} className="flex gap-4 mb-3">
+      <motion.div animate={controls} className="flex gap-5 mb-3">
         {Array.from({ length }).map((_, i) => (
           <motion.div
             key={i}
             className={cn(
-              "h-3 w-3 rounded-full transition-colors duration-[75ms] ease-out",
+              "h-4 w-4 rounded-full transition-colors duration-[75ms] ease-out",
               error
                 ? "bg-red-500"
                 : pin.length > i
@@ -95,7 +95,7 @@ export function PinPad({
         ))}
       </motion.div>
 
-      <div className="grid grid-cols-3 gap-y-4 gap-x-8 w-full max-w-[260px] mx-auto mt-8">
+      <div className="grid grid-cols-3 gap-y-5 gap-x-10 w-full max-w-[320px] mx-auto mt-8">
         {numpad.map((num) => (
           <motion.button
             key={num}
@@ -103,7 +103,7 @@ export function PinPad({
             transition={{ duration: 0.15, ease: "easeOut" }}
             onClick={() => handleKeyPress(num)}
             disabled={disabled}
-            className="h-16 w-16 mx-auto flex items-center justify-center rounded-full text-[26px] font-normal text-slate-800 dark:text-slate-100 bg-slate-500/5 dark:bg-white/5 transition-colors duration-200 disabled:opacity-50 touch-manipulation focus:outline-none active:bg-slate-500/15 dark:active:bg-white/20 active:duration-75"
+            className="h-20 w-20 mx-auto flex items-center justify-center rounded-full text-[30px] font-normal text-slate-800 dark:text-slate-100 bg-slate-500/5 dark:bg-white/5 transition-colors duration-200 disabled:opacity-50 touch-manipulation focus:outline-none active:bg-slate-500/15 dark:active:bg-white/20 active:duration-75"
           >
             {num}
           </motion.button>
@@ -116,7 +116,7 @@ export function PinPad({
           transition={{ duration: 0.15, ease: "easeOut" }}
           onClick={() => handleKeyPress("0")}
           disabled={disabled}
-          className="h-16 w-16 mx-auto flex items-center justify-center rounded-full text-[26px] font-normal text-slate-800 dark:text-slate-100 bg-slate-500/5 dark:bg-white/5 transition-colors duration-200 disabled:opacity-50 touch-manipulation focus:outline-none active:bg-slate-500/15 dark:active:bg-white/20 active:duration-75"
+          className="h-20 w-20 mx-auto flex items-center justify-center rounded-full text-[30px] font-normal text-slate-800 dark:text-slate-100 bg-slate-500/5 dark:bg-white/5 transition-colors duration-200 disabled:opacity-50 touch-manipulation focus:outline-none active:bg-slate-500/15 dark:active:bg-white/20 active:duration-75"
         >
           0
         </motion.button>
@@ -127,9 +127,9 @@ export function PinPad({
           onClick={handleDelete}
           disabled={disabled || pin.length === 0}
           aria-label="Borrar último dígito"
-          className="h-16 w-16 mx-auto flex items-center justify-center rounded-full text-slate-400 dark:text-slate-500 bg-slate-500/5 dark:bg-white/5 transition-all duration-200 disabled:opacity-0 focus:outline-none touch-manipulation active:bg-slate-500/15 dark:active:bg-white/20 active:text-slate-800 dark:active:text-white active:duration-75"
+          className="h-20 w-20 mx-auto flex items-center justify-center rounded-full text-slate-400 dark:text-slate-500 bg-slate-500/5 dark:bg-white/5 transition-all duration-200 disabled:opacity-0 focus:outline-none touch-manipulation active:bg-slate-500/15 dark:active:bg-white/20 active:text-slate-800 dark:active:text-white active:duration-75"
         >
-          <Delete className="h-6 w-6 stroke-[1.5]" />
+          <Delete className="h-7 w-7 stroke-[1.5]" />
         </motion.button>
       </div>
     </div>

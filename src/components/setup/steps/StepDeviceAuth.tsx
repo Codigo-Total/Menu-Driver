@@ -64,11 +64,17 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
   };
 
   return (
-    <div className="flex flex-col items-center text-center max-w-xl mx-auto py-8">
-      <h2 className="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2">
+    <div className="flex flex-col items-center text-center max-w-xl mx-auto">
+      <h2
+        className="font-display font-bold text-slate-900 dark:text-white"
+        style={{ fontSize: "clamp(1.25rem, 3.6vh, 1.875rem)", marginBottom: "clamp(0.25rem, 0.8vh, 0.5rem)" }}
+      >
         {t("setup.auth.title")}
       </h2>
-      <p className="text-slate-500 dark:text-white/50 mb-10">
+      <p
+        className="text-slate-500 dark:text-white/50"
+        style={{ fontSize: "clamp(0.75rem, 1.8vh, 0.95rem)", marginBottom: "clamp(0.75rem, 2.5vh, 1.5rem)" }}
+      >
         {t("setup.auth.subtitle")}
       </p>
 
@@ -79,11 +85,20 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex flex-col gap-4 w-full max-w-sm"
+            className="flex flex-col w-full max-w-sm"
+            style={{ gap: "clamp(0.5rem, 1.5vh, 1rem)" }}
           >
             <button
               onClick={() => setProvider("google")}
-              className="flex items-center justify-center gap-4 w-full px-8 py-5 text-lg font-bold rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white shadow-lg shadow-black/5 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all min-h-[68px]"
+              className="flex items-center justify-center gap-4 w-full font-bold rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white shadow-lg shadow-black/5 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+              style={{
+                paddingLeft: "clamp(1.5rem, 4vw, 2rem)",
+                paddingRight: "clamp(1.5rem, 4vw, 2rem)",
+                paddingTop: "clamp(0.875rem, 2.2vh, 1.25rem)",
+                paddingBottom: "clamp(0.875rem, 2.2vh, 1.25rem)",
+                fontSize: "clamp(0.9375rem, 2.2vh, 1.125rem)",
+                minHeight: "clamp(52px, 8vh, 68px)",
+              }}
             >
               <GoogleIcon className="w-7 h-7" />
               {t("setup.auth.google")}
@@ -91,7 +106,15 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
 
             <button
               onClick={() => setProvider("apple")}
-              className="flex items-center justify-center gap-4 w-full px-8 py-5 text-lg font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black shadow-lg shadow-black/10 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all min-h-[68px]"
+              className="flex items-center justify-center gap-4 w-full font-bold rounded-2xl bg-black dark:bg-white text-white dark:text-black shadow-lg shadow-black/10 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+              style={{
+                paddingLeft: "clamp(1.5rem, 4vw, 2rem)",
+                paddingRight: "clamp(1.5rem, 4vw, 2rem)",
+                paddingTop: "clamp(0.875rem, 2.2vh, 1.25rem)",
+                paddingBottom: "clamp(0.875rem, 2.2vh, 1.25rem)",
+                fontSize: "clamp(0.9375rem, 2.2vh, 1.125rem)",
+                minHeight: "clamp(52px, 8vh, 68px)",
+              }}
             >
               <AppleIcon className="w-7 h-7" />
               {t("setup.auth.apple")}
@@ -107,7 +130,7 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
             exit={{ opacity: 0, y: -10 }}
             className="flex flex-col items-center"
           >
-            <div className="mb-6 flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+            <div className="mb-4 flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
               {provider === "google" ? (
                 <GoogleIcon className="w-5 h-5" />
               ) : (
@@ -132,9 +155,10 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="w-64 h-64 flex flex-col items-center justify-center bg-slate-100 dark:bg-white/5 rounded-3xl border border-slate-200 dark:border-white/10"
+                    className="flex flex-col items-center justify-center bg-slate-100 dark:bg-white/5 rounded-3xl border border-slate-200 dark:border-white/10"
+                    style={{ width: "clamp(8rem, 24vh, 11rem)", height: "clamp(8rem, 24vh, 11rem)" }}
                   >
-                    <Loader2 className="w-10 h-10 text-brand-yellow-400 animate-spin mb-4" />
+                    <Loader2 style={{ width: "clamp(1.75rem, 5vh, 2.5rem)", height: "clamp(1.75rem, 5vh, 2.5rem)" }} className="text-brand-yellow-400 animate-spin mb-3" />
                     <span className="text-xs text-slate-400 dark:text-white/30 uppercase tracking-widest font-bold">
                       Iniciando...
                     </span>
@@ -146,11 +170,12 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
                     key="qr"
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="p-8 bg-white rounded-[2.5rem] shadow-2xl shadow-brand-yellow-500/10"
+                    className="bg-white rounded-3xl shadow-2xl shadow-brand-yellow-500/10"
+                    style={{ padding: "clamp(0.75rem, 2vh, 1.25rem)" }}
                   >
                     <QRCodeSVG
                       value={operation.qrUrl}
-                      size={220}
+                      size={Math.min(180, Math.floor((typeof window !== "undefined" ? window.innerHeight : 600) * 0.28))}
                       level="H"
                       includeMargin={false}
                       imageSettings={{
@@ -167,7 +192,16 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
               </AnimatePresence>
             </div>
 
-            <div className="mt-10 flex items-center gap-3 px-6 py-3 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+            <div
+              className="flex items-center gap-3 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10"
+              style={{
+                marginTop: "clamp(0.75rem, 2.5vh, 1.5rem)",
+                paddingLeft: "clamp(1rem, 3vw, 1.25rem)",
+                paddingRight: "clamp(1rem, 3vw, 1.25rem)",
+                paddingTop: "clamp(0.4rem, 1.2vh, 0.625rem)",
+                paddingBottom: "clamp(0.4rem, 1.2vh, 0.625rem)",
+              }}
+            >
               <div className="w-2 h-2 rounded-full bg-brand-yellow-400 animate-pulse" />
               <span className="text-xs text-slate-400 dark:text-white/40 uppercase tracking-widest font-bold">
                 {t("setup.auth.waiting")}
@@ -180,9 +214,18 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 onClick={simulateScan}
-                className="mt-6 flex items-center gap-3 px-10 py-5 text-base rounded-full bg-brand-yellow-400 hover:bg-brand-yellow-500 text-slate-900 font-bold uppercase tracking-widest transition-colors active:scale-95 min-h-[60px]"
+                className="flex items-center gap-3 rounded-full bg-brand-yellow-400 hover:bg-brand-yellow-500 text-slate-900 font-bold uppercase tracking-widest transition-colors active:scale-95"
+                style={{
+                  marginTop: "clamp(0.5rem, 1.5vh, 1rem)",
+                  paddingLeft: "clamp(1.5rem, 4vw, 2rem)",
+                  paddingRight: "clamp(1.5rem, 4vw, 2rem)",
+                  paddingTop: "clamp(0.625rem, 1.8vh, 1rem)",
+                  paddingBottom: "clamp(0.625rem, 1.8vh, 1rem)",
+                  fontSize: "clamp(0.75rem, 1.6vh, 0.875rem)",
+                  minHeight: "clamp(40px, 6vh, 52px)",
+                }}
               >
-                <Smartphone className="w-5 h-5" />
+                <Smartphone style={{ width: "clamp(1rem, 2vh, 1.25rem)", height: "clamp(1rem, 2vh, 1.25rem)" }} />
                 Simular escaneo (demo)
               </motion.button>
             )}
@@ -194,10 +237,14 @@ export default function StepDeviceAuth({ onNext }: StepProps) {
             key="success"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-64 h-64 flex flex-col items-center justify-center bg-green-500/10 rounded-3xl border border-green-500/20"
+            className="flex flex-col items-center justify-center bg-green-500/10 rounded-3xl border border-green-500/20"
+            style={{ width: "clamp(10rem, 30vh, 16rem)", height: "clamp(10rem, 30vh, 16rem)" }}
           >
-            <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mb-4">
-              <ShieldCheck className="w-10 h-10 text-white" />
+            <div
+              className="bg-green-500 rounded-full flex items-center justify-center"
+              style={{ width: "clamp(3.5rem, 9vh, 5rem)", height: "clamp(3.5rem, 9vh, 5rem)", marginBottom: "clamp(0.5rem, 1.5vh, 1rem)" }}
+            >
+              <ShieldCheck style={{ width: "clamp(1.75rem, 4.5vh, 2.5rem)", height: "clamp(1.75rem, 4.5vh, 2.5rem)" }} className="text-white" />
             </div>
             <span className="text-sm font-bold text-green-400">
               {t("setup.auth.success")}

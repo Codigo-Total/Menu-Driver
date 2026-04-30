@@ -20,7 +20,10 @@ export function Stepper({ currentStep }: StepperProps) {
   const { t } = useLangStore();
 
   return (
-    <div className="flex items-center justify-center w-full gap-4 px-4 py-8">
+    <div
+      className="flex items-center justify-center w-full px-4"
+      style={{ paddingTop: "clamp(0.5rem, 2vh, 1.25rem)", paddingBottom: "clamp(0.5rem, 2vh, 1.25rem)", gap: "clamp(0.5rem, 1.5vw, 1rem)" }}
+    >
       {STEPS.map((stepKey, index) => {
         const isCompleted = index < currentStep;
         const isActive = index === currentStep;

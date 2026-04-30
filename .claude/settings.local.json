@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(awk '{printf \"%d:%s\\\\n\", NR, length\\($0\\)}' src/app/setup/page.tsx)"
     ]
   }
 }

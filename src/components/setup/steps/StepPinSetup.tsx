@@ -40,21 +40,33 @@ export default function StepPinSetup({ onNext }: StepProps) {
   const setCurrentPin = isConfirming ? setConfirmPin : setPin;
 
   return (
-    <div className="flex flex-col items-center text-center max-w-xl mx-auto py-4">
-      <h2 className="text-3xl font-display font-bold text-slate-900 dark:text-white mb-2">
+    <div className="flex flex-col items-center text-center max-w-xl mx-auto">
+      <h2
+        className="font-display font-bold text-slate-900 dark:text-white"
+        style={{ fontSize: "clamp(1.25rem, 3.6vh, 1.875rem)", marginBottom: "clamp(0.125rem, 0.5vh, 0.5rem)" }}
+      >
         {t("setup.pin.title")}
       </h2>
-      <p className="text-slate-500 dark:text-white/50 mb-8">
+      <p
+        className="text-slate-500 dark:text-white/50"
+        style={{ fontSize: "clamp(0.75rem, 1.8vh, 0.95rem)", marginBottom: "clamp(0.5rem, 1.5vh, 1rem)" }}
+      >
         {t("setup.pin.subtitle")}
       </p>
 
-      <span className="text-xs uppercase tracking-widest font-bold text-brand-yellow-400 mb-6">
+      <span
+        className="uppercase tracking-widest font-bold text-brand-yellow-400"
+        style={{ fontSize: "clamp(0.625rem, 1.4vh, 0.75rem)", marginBottom: "clamp(0.5rem, 1.5vh, 1rem)" }}
+      >
         {isConfirming ? t("setup.pin.confirm") : t("setup.pin.enter")}
       </span>
 
       <PinPad pin={currentPin} onChange={setCurrentPin} error={error} />
 
-      <div className="h-6 mt-4 flex items-center justify-center">
+      <div
+        className="flex items-center justify-center"
+        style={{ height: "clamp(1rem, 2vh, 1.5rem)", marginTop: "clamp(0.5rem, 1.5vh, 1rem)" }}
+      >
         <AnimatePresence>
           {error && (
             <motion.span
